@@ -1,0 +1,6 @@
+*.rdata
+*.docx
+*.html
+*.md
+*.kml
+.Rproj.user
