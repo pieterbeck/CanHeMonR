@@ -88,6 +88,8 @@ assign_crowncells_quantile <- function(r, crown_shp, outpname_r, plott = F, quan
     cat('wrote away ',outpname_shp, '\n with attributes \n')
     print(head(slot(crowns_outp, "data")))
   }
+
+
   return(outp)
 }
 
