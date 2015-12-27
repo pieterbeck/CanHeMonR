@@ -4,3 +4,4 @@
 *.md
 *.kml
 .Rproj.user
+*.Rhistory

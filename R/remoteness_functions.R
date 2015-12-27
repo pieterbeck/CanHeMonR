@@ -35,7 +35,7 @@ calculate_remoteness_from_binary_raster <- function(binary.raster,outer.diam.in.
   outer.diam.in.pix1 <- outer.diam.in.m/raster::res(binary.raster)[1]
   inner.diam.in.pix1 <- inner.diam.in.m/raster::res(binary.raster)[1]
 
-  #create the donuht-shaped weights matrix (ie focal area)
+  #create the donut-shaped weights matrix (ie focal area)
   circle.square.distance.in.pix <- create_focal_weights(outer.diam.in.pix=outer.diam.in.pix1,inner.diam.in.pix=inner.diam.in.pix1)
 
   sum.if.nonNA <- function(x,na.rm=F){
