@@ -232,8 +232,8 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
   prox_ind_process <- prox_ind
   #take the most central 4(n=startclus) pixels for granted as crown
   #calculate the multidimensional mean and covariance of the distribution they describe
-  prev_mn <-  colMeans(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-  prev_cov <-  cov(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
+  prev_mn <-  colMeans(testim[prox_ind_process[1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
+  prev_cov <-  cov(testim[prox_ind_process[1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
   #check that this start cluster doesn't produce a singular covariance matrix
   singular <- T
   while (singular == T){
@@ -244,8 +244,8 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #prev_mn <-  colMeans(testim[prox_ind_process[1,1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
       #prev_cov <-  cov(testim[prox_ind_process[1,1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
 
-      prev_mn <-  colMeans(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-      prev_cov <-  cov(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
+      prev_mn <-  colMeans(testim[prox_ind_process[sample(1:startclus_,startclus)]])  ### DIMENSIONS SHOULD BE COLUMNS!
+      prev_cov <-  cov(testim[prox_ind_process[sample(1:startclus_,startclus)]])  ### DIMENSIONS SHOULD BE COLUMNS!
 
       cat('singular covariance matrix, expanding startcluster to ', startclus_,' cells\n')
     }else{
@@ -255,9 +255,9 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
    #flag the startcluster pixels as 'valid crown', by making their pixnr negative in the registration of neighbours
   prox_ind_process <- flag_valid_pix(pixnr.=prox_ind_process[1:startclus_,],prox_ind_=prox_ind_process)
 
-  crown_pix_nrs <- prox_ind_process[1:startclus_, 1]
+  crown_pix_nrs <- prox_ind_process[1:startclus_]
     #sds<-sd(testim[prox_ind[1,1:startclus_]],na.rm=T) ##REMOVE?
-  testim_outp[prox_ind[1:startclus_, 1]] <- 1
+  testim_outp[prox_ind[1:startclus_]] <- 1
 
   #for each pixel nr in order of proximity to the center
   for(i in ((startclus_+1):nrow(prox_ind_process))){
@@ -272,17 +272,18 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #how many sds is the new observation away from the estimated distribution?
       #mahalanobis command returns the SQUARED mahalanobis distance
       #for normal variables, it follows a chi-squre distribution
-      homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i, 1]], center = prev_mn, cov = prev_cov)
+      #homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i]], center = prev_mn, cov = prev_cov)
+      homogen_ <- mvnfast::maha(X = testim_process[prox_ind_process[i]], mu = prev_mn, sigma = prev_cov)
 
       #does the sd pass the homogeneity test?
       if ((homogen_) < homogen_thresh){
         #the sd passes the homogeneity test
         #register the nr of this crown pixel
-        crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i, 1])
+        crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i])
         #flag it as a valid neighbour
-        prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[i, 1], prox_ind_ = prox_ind_process)
+        prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[i], prox_ind_ = prox_ind_process)
         #register the pixel in the output
-        testim_outp[prox_ind_process[i,1]] <- (homogen_)
+        testim_outp[prox_ind_process[i]] <- homogen_
         #update the sds list
         #sds <- c(sds,homogen_)
 
@@ -302,16 +303,16 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
         #the sd does NOT pass the homogeneity test
         #cat('sd exceeded threshold\n')
         #make sure this pixel doesn't get considered in futur sds calculation
-        testim_process[prox_ind_process[i,1]] <- NA
-        testim_outp[prox_ind_process[i,1]] <- -10
+        testim_process[prox_ind_process[i]] <- NA
+        testim_outp[prox_ind_process[i]] <- -10
         #sds <- c(sds,NA)
       }
     }else{
       #the pixel does not have any valid neighbours
       #cat('no valid neighbours detected\n')
       #make sure this pixel doesn't get considered in futur sds calculation
-      testim_process[prox_ind_process[i,1]] <- NA
-      testim_outp[prox_ind_process[i,1]] <- -2
+      testim_process[prox_ind_process[i]] <- NA
+      testim_outp[prox_ind_process[i] <- -2
     }
   }
   #get the indices of the crown pixels
