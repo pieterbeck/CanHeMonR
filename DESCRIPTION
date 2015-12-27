@@ -25,6 +25,7 @@ Imports: raster,
       Morpho,
       sampling,
       psych,
-      FNN
+      FNN,
+      mvnfast
 License: GPL-3
 LazyData: TRUE
