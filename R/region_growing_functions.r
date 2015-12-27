@@ -26,7 +26,7 @@ check_im_res <- function(r, max_radius){
 #' @export
 ensure_uneven_r_dim <- function(r){
 
-  if(dim(r)[1] %%2 == 0){
+  if(dim(r)[1] %%2 ==0){
     r <- raster::crop(r, raster::extent(r, 1, ncol(r)-1, 1, nrow(r)))
   }
   if(dim(r)[2] %%2 ==0){
@@ -43,7 +43,7 @@ ensure_uneven_r_dim <- function(r){
 #' @return a 2 row matrix where row 1: cell nr, and row 2: distance to center measured in cellnrs
 #' @note called in region_growing_wrapper.r
 #' @export
-proximity_indices <- function(nrow_ = 3,ncol_ = 6){
+proximity_indices <- function(nrow_=3,ncol_=6){
 
   if (nrow_%%2 !=1){cat('Window size should be uneven ! exiting\n');return()}
   if (ncol_%%2 !=1){cat('Window size should be uneven ! exiting\n');return()}
@@ -70,38 +70,26 @@ proximity_indices <- function(nrow_ = 3,ncol_ = 6){
 #' @return a matrix providing the linear cell number in the first row, and in following rows, the linear cell numbers of neighbour cells
 #' @note called in region_growing_wrapper.r
 #' @export
-calc_neighbours_pix_nrs <- function(nrow_, ncol_, include.diags = T){
+calc_neighbours_pix_nrs <- function(nrow_, ncol_,include.diags = T){
 
-  mat <- matrix(data = 1:(nrow_ * ncol_), nrow = nrow_)
-  mat.down <- rbind( rep(NA, ncol_), mat)
-  mat.down <- mat.down[1:nrow_, ]
+  mat <- matrix(data=1:(nrow_*ncol_),nrow=nrow_)
+  mat.down <- rbind(rep(NA,ncol_),mat);mat.down <- mat.down[1:nrow_,]
+  mat.right <- cbind(rep(NA,nrow_),mat);mat.right <- mat.right[,1:ncol_]
 
-  mat.right <- cbind(rep(NA,nrow_), mat)
-  mat.right <- mat.right[ , 1:ncol_]
-
-  mat.up <- rbind(mat, rep(NA,ncol_))
-  mat.up <- mat.up[2:(nrow_ + 1), ]
-  mat.left <- cbind(mat, rep(NA, nrow_))
-  mat.left <- mat.left[ , 2:(ncol_ + 1)]
+  mat.up <- rbind(mat,rep(NA,ncol_));mat.up <- mat.up[2:(nrow_+1),]
+  mat.left <- cbind(mat,rep(NA,nrow_));mat.left <- mat.left[,2:(ncol_+1)]
 
   neighbours.pix.nrs <- rbind(as.vector(mat),as.vector(mat.down),as.vector(mat.left),as.vector(mat.up),as.vector(mat.right))
 
   #if diagonal neighbours should be considered
   if(include.diags){
-    mat.downright <- rbind((rep(NA, ncol_ + 1)),cbind(rep(NA, nrow_),mat))
-    mat.downright <- mat.downright[1:nrow_,1:ncol_]
-    mat.downleft <- rbind((rep(NA,ncol_+1)),cbind(mat,rep(NA, nrow_)))
-    mat.downleft <- mat.downleft[1:nrow_,2:(ncol_+1)]
+    mat.downright <-rbind((rep(NA,ncol_+1)),cbind(rep(NA,nrow_),mat));mat.downright <- mat.downright[1:nrow_,1:ncol_]
+    mat.downleft <- rbind((rep(NA,ncol_+1)),cbind(mat,rep(NA,nrow_)));mat.downleft <- mat.downleft[1:nrow_,2:(ncol_+1)]
 
-    mat.upright <- rbind(cbind(rep(NA, nrow_), mat), rep(NA,ncol_ + 1))
-    mat.upright <- mat.upright[2:(nrow_ + 1), 1:ncol_]
-    mat.upleft <-  rbind(cbind(mat, rep(NA, nrow_)), rep(NA, ncol_ + 1))
-    mat.upleft <- mat.upleft[2:(nrow_ + 1), 2:(ncol_ + 1)]
-
-    neighbours.pix.nrs <- rbind(neighbours.pix.nrs,as.vector(mat.downright),
-                                as.vector(mat.downleft),as.vector(mat.upright),as.vector(mat.upleft))
-    rownames(neighbours.pix.nrs) <- c('pix.nr','up.nr','right.nr','down.nr','left.nr','mat.downright',
-                                      'mat.downleft','mat.upright','mat.upleft')
+    mat.upright <- rbind(cbind(rep(NA,nrow_),mat),rep(NA,ncol_+1));mat.upright <- mat.upright[2:(nrow_+1),1:ncol_]
+    mat.upleft <-  rbind(cbind(mat,rep(NA,nrow_)),rep(NA,ncol_+1));mat.upleft <- mat.upleft[2:(nrow_+1),2:(ncol_+1)]
+    neighbours.pix.nrs <- rbind(neighbours.pix.nrs,as.vector(mat.downright),as.vector(mat.downleft),as.vector(mat.upright),as.vector(mat.upleft))
+    rownames(neighbours.pix.nrs) <- c('pix.nr','up.nr','right.nr','down.nr','left.nr','mat.downright','mat.downleft','mat.upright','mat.upleft')
   }else{
     rownames(neighbours.pix.nrs) <- c('pix.nr','up.nr','right.nr','down.nr','left.nr')
   }
@@ -119,10 +107,10 @@ calc_neighbours_pix_nrs <- function(nrow_, ncol_, include.diags = T){
 #' @note called in region_growing_wrapper.r
 #' @seealso \code{calc.neighbours.pix.nrs}
 #' @export
-flag_valid_pix <- function(pixnr., prox_ind_){
-  prox_ind_neighb <- prox_ind_[, -c(1:2)]
-  prox_ind_neighb[is.element(prox_ind_neighb, pixnr.)] <- -1 * prox_ind_neighb[is.element(prox_ind_neighb, pixnr.)]
-  prox_ind_[ , 3:ncol(prox_ind_)] <- prox_ind_neighb
+flag_valid_pix <- function(pixnr.,prox_ind_){
+  prox_ind_neighb <- prox_ind_[,-c(1:2)]
+  prox_ind_neighb[is.element(prox_ind_neighb,pixnr.)] <- -1*prox_ind_neighb[is.element(prox_ind_neighb,pixnr.)]
+  prox_ind_[,3:ncol(prox_ind_)] <- prox_ind_neighb
   return(prox_ind_)
 }
 
@@ -136,26 +124,26 @@ flag_valid_pix <- function(pixnr., prox_ind_){
 #' @import rgeos
 #' @import maptools
 #' @export
-close_crown <- function(outp., kern.size = 2){
+close_crown <- function(outp.,kern.size=2){
   #require(mmand)
   require(maptools) # don't take this out because you get
   #Error in get("rgeos", envir = .MAPTOOLS_CACHE) : object 'rgeos' not found
 
-  kern. <- mmand::shapeKernel(c(kern.size, kern.size), type = "disc")
-  outp.m <- matrix(as.numeric(raster::values(outp.)), nrow = ncol(outp.))
+  kern. <- mmand::shapeKernel(c(kern.size,kern.size), type="disc")
+  outp.m <- matrix(as.numeric(raster::values(outp.)),nrow=ncol(outp.))
   #outp.close <- closing(outp.m,kernel=kern.)
-  outp.close <- mmand::opening(outp.m, kernel=kern.)
+  outp.close <- mmand::opening(outp.m,kernel=kern.)
   outp.close[outp.close == 0] <- NA
 
   outp.close.r <- outp.
   raster::values(outp.close.r) <- as.vector(outp.close)
   #image(outp.close.r)
   if(any(outp.close > 0, na.rm=T)){
-    crown_pol <- raster::rasterToPolygons(outp.close.r, fun = function(x){x>0})
-    crown_pol <- maptools::unionSpatialPolygons(crown_pol, ID = rep(1, length(crown_pol)))
+    crown_pol <- raster::rasterToPolygons(outp.close.r,fun = function(x){x>0})
+    crown_pol <- maptools::unionSpatialPolygons(crown_pol,ID=rep(1,length(crown_pol)))
   }else{
-    crown_pol <- raster::rasterToPolygons(outp., fun = function(x){x>0})
-    crown_pol <- maptools::unionSpatialPolygons(crown_pol, ID = rep(1, length(crown_pol)))
+    crown_pol <- raster::rasterToPolygons(outp.,fun = function(x){x>0})
+    crown_pol <- maptools::unionSpatialPolygons(crown_pol,ID=rep(1,length(crown_pol)))
   }
   return(crown_pol)
 }
@@ -244,12 +232,8 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
   prox_ind_process <- prox_ind
   #take the most central 4(n=startclus) pixels for granted as crown
   #calculate the multidimensional mean and covariance of the distribution they describe
-
-  #prev_mn <-  colMeans(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-  #prev_cov <-  cov(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-
-  prev_mn <-  colMeans(testim[prox_ind_process[1:startclus_]])  #faster than previous block
-  prev_cov <-  cov(testim[prox_ind_process[1:startclus_]])
+  prev_mn <-  colMeans(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
+  prev_cov <-  cov(testim[prox_ind_process[1:startclus_, 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
   #check that this start cluster doesn't produce a singular covariance matrix
   singular <- T
   while (singular == T){
@@ -260,27 +244,20 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #prev_mn <-  colMeans(testim[prox_ind_process[1,1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
       #prev_cov <-  cov(testim[prox_ind_process[1,1:startclus_]])  ### DIMENSIONS SHOULD BE COLUMNS!
 
-      #prev_mn <-  colMeans(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-      #prev_cov <-  cov(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
-
-      # not sure why I decided to sample here...
-      prev_mn <-  colMeans(testim[prox_ind_process[sample(1:startclus_, startclus)]])  ### faster than previous block
-      prev_cov <-  cov(testim[prox_ind_process[sample(1:startclus_, startclus)]])
+      prev_mn <-  colMeans(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
+      prev_cov <-  cov(testim[prox_ind_process[sample(1:startclus_,startclus), 1]])  ### DIMENSIONS SHOULD BE COLUMNS!
 
       cat('singular covariance matrix, expanding startcluster to ', startclus_,' cells\n')
     }else{
       singular <- F
     }
   }
+   #flag the startcluster pixels as 'valid crown', by making their pixnr negative in the registration of neighbours
+  prox_ind_process <- flag_valid_pix(pixnr.=prox_ind_process[1:startclus_,],prox_ind_=prox_ind_process)
 
-  #flag the startcluster pixels as 'valid crown', by making their pixnr negative in the registration of neighbours
-  prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[1:startclus_, ], prox_ind_ = prox_ind_process)
-
-  #crown_pix_nrs <- prox_ind_process[1:startclus_, 1]
-  crown_pix_nrs <- prox_ind_process[1:startclus_] #faster than previous block
-
-  #testim_outp[prox_ind[1:startclus_, 1]] <- 1
-  testim_outp[prox_ind[1:startclus_]] <- 1 #faster than previous block
+  crown_pix_nrs <- prox_ind_process[1:startclus_, 1]
+    #sds<-sd(testim[prox_ind[1,1:startclus_]],na.rm=T) ##REMOVE?
+  testim_outp[prox_ind[1:startclus_, 1]] <- 1
 
   #for each pixel nr in order of proximity to the center
   for(i in ((startclus_+1):nrow(prox_ind_process))){
@@ -295,27 +272,19 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #how many sds is the new observation away from the estimated distribution?
       #mahalanobis command returns the SQUARED mahalanobis distance
       #for normal variables, it follows a chi-squre distribution
-      #homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i, 1]], center = prev_mn, cov = prev_cov)
-      #homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i]], center = prev_mn, cov = prev_cov)#faster than previous
-      #using a faster mahalanobis distance calculater, from the mvnfast package, which uses C++ code through Rcpp,
-      #microbenchmarking indicates 5-10fold speed gain:
-      homogen_ <- mvnfast::maha(X = testim_process[prox_ind_process[i]], mu = prev_mn, sigma = prev_cov)#faster than previous
-
+      homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i, 1]], center = prev_mn, cov = prev_cov)
 
       #does the sd pass the homogeneity test?
-      if (homogen_ < homogen_thresh){
+      if ((homogen_) < homogen_thresh){
         #the sd passes the homogeneity test
         #register the nr of this crown pixel
-        #crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i, 1])
-        crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i])#faster than previous
+        crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i, 1])
         #flag it as a valid neighbour
-        #prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[i, 1], prox_ind_ = prox_ind_process)
-        prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[i], prox_ind_ = prox_ind_process)#faster than previous
+        prox_ind_process <- flag_valid_pix(pixnr. = prox_ind_process[i, 1], prox_ind_ = prox_ind_process)
         #register the pixel in the output
-        testim_outp[prox_ind_process[i]] <- homogen_
-        #which is faster than
-        #testim_outp[prox_ind_process[i,1]] <- (homogen_)
-
+        testim_outp[prox_ind_process[i,1]] <- (homogen_)
+        #update the sds list
+        #sds <- c(sds,homogen_)
 
         #update the description of the distribution new pixels need to fit
         #browser()
@@ -333,21 +302,16 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
         #the sd does NOT pass the homogeneity test
         #cat('sd exceeded threshold\n')
         #make sure this pixel doesn't get considered in futur sds calculation
-        testim_process[prox_ind_process[i]] <- NA
-        testim_outp[prox_ind_process[i]] <- -10
-        #which is faster than
-        #testim_process[prox_ind_process[i,1]] <- NA
-        #testim_outp[prox_ind_process[i,1]] <- -10
+        testim_process[prox_ind_process[i,1]] <- NA
+        testim_outp[prox_ind_process[i,1]] <- -10
+        #sds <- c(sds,NA)
       }
     }else{
       #the pixel does not have any valid neighbours
       #cat('no valid neighbours detected\n')
       #make sure this pixel doesn't get considered in futur sds calculation
-      testim_process[prox_ind_process[i]] <- NA
-      testim_outp[prox_ind_process[i]] <- -2
-      #which is faster than
-      #testim_process[prox_ind_process[i,1]] <- NA
-      #testim_outp[prox_ind_process[i,1]] <- -2
+      testim_process[prox_ind_process[i,1]] <- NA
+      testim_outp[prox_ind_process[i,1]] <- -2
     }
   }
   #get the indices of the crown pixels
