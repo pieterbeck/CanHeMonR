@@ -3,12 +3,15 @@
 #' plot the crown delineated around each of the spatial points in each of the images.
 #' @param spatial_points A SpatialPoints object
 #' @param image_fnames Filenames of images
-#' @param RGBseqs A 3 row matrix that indicates for each image which band nummers to display as red, green, and blue, repsectively
-#' @param crown_fnames Filenames of the crown polygon shapefiles associated with each of the images in image_fnames. The shapefiles must have the attributes
+#' @param RGBseqs A 3 row matrix that indicates for each image which band nummers to display as red, green, and blue, respectively.
+#' It should have as many columns as image_fnames is long.
+#' @param crown_fnames Filenames of the crown polygon shapefiles associated with each of the images in image_fnames.
+#'
+#' The shapefiles must have the attributes
 #' primalX and primalY, which refer to the coordinates of the centers of the crowns in a reference image
-#' @param RGBseqs A three-column matrix, with as many rows as image_fnames is long. The row values should provide the band numbers for the image_fnames that should be plotted as Red, Green, and Blue.
 #' @param outp_dir Directory where plots for each crown are stored
-#' @param overwrite Logical. Should the outp_dir be emptied prior to plotting? Default is T. Setting it to F can be handy when the code needs to be rerun after an
+#' @param overwrite Logical. Should the outp_dir be emptied prior to plotting? Default is T.
+#' Setting it to F can be handy when the code needs to be rerun after an
 #' unexpected interruption.
 #' @return A set of jpeg files of crowns plotted on top of their respective images.
 #' @export

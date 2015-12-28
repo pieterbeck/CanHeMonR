@@ -2,7 +2,8 @@
 #' @description ...
 #' @param input_shps Character vector with filenames of shapfiles to merge
 #' @param outp_shp Filename of the output shapefile
-#' @param coordinate_attribs Character vector of length 2 giving the attributes that indicate x and y coordinates (in that order)
+#' @param common_attribs Character vector. The names of attributes that are present in each of the input_shps.
+#' Most commonly it is of length 2 giving the attributes that indicate x and y coordinates.
 #' These attributes must be present and equivalent in all input shapefiles. Default is c('primalX','primalY')
 #' @param attribs_to_drop Optional. The names of any attributes you won't to drop from the output.
 #' @return Writes away a shapefile containing all attributes of the inputs. The attributes in the output have a 'i#' prefex referring

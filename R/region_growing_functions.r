@@ -273,10 +273,11 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #mahalanobis command returns the SQUARED mahalanobis distance
       #for normal variables, it follows a chi-squre distribution
       #homogen_ <- mahalanobis(x = testim_process[prox_ind_process[i]], center = prev_mn, cov = prev_cov)
+      #using a faster implementation of mahalanobis distance. Microbenchmarking indicates 20% time gain
       homogen_ <- mvnfast::maha(X = testim_process[prox_ind_process[i]], mu = prev_mn, sigma = prev_cov)
 
       #does the sd pass the homogeneity test?
-      if ((homogen_) < homogen_thresh){
+      if (homogen_ < homogen_thresh){
         #the sd passes the homogeneity test
         #register the nr of this crown pixel
         crown_pix_nrs <- c(crown_pix_nrs,prox_ind_process[i])
@@ -312,7 +313,7 @@ grow_crown <- function(testim, prox_ind, startclus, prob_cut){
       #cat('no valid neighbours detected\n')
       #make sure this pixel doesn't get considered in futur sds calculation
       testim_process[prox_ind_process[i]] <- NA
-      testim_outp[prox_ind_process[i] <- -2
+      testim_outp[prox_ind_process[i]] <- -2
     }
   }
   #get the indices of the crown pixels

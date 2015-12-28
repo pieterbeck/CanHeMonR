@@ -5,26 +5,29 @@ Version: 0.1
 Date: 2015-09-15
 Authors@R: person("Pieter", "Beck", email = "pieter.beck@jrc.ec.europa.eu", role = c("aut", "cre"))
 Description: Tools for canopy health monitoring through image analysis.
-Depends: R (>= 3.2.2)
-Imports: raster,
-      doParallel,
-      foreach,
-      parallel,
-      iterators,
-      maptools,
-      gpclib,
-      plyr,
-      rgeos,
-      spdep,
-      randomForest,
-      minpack.lm,
-      rgdal,
-      mmand,
-      sp,
-      rasterVis,
-      Morpho,
-      sampling,
-      psych,
-      FNN
+Depends:
+    R (>= 3.2.2)
+Imports:
+    raster,
+    doParallel,
+    foreach,
+    parallel,
+    iterators,
+    maptools,
+    gpclib,
+    plyr,
+    rgeos,
+    spdep,
+    randomForest,
+    minpack.lm,
+    rgdal,
+    mmand,
+    sp,
+    rasterVis,
+    Morpho,
+    sampling,
+    psych,
+    FNN
 License: GPL-3
 LazyData: TRUE
+RoxygenNote: 5.0.1

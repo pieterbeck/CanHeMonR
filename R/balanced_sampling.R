@@ -75,7 +75,7 @@ samplestratified <- function(mydat, nsamples, strats){
 
 #' @title A Customized Pairs Plot
 #' @description Summarize a data set visually using a pairs plot
-#' @param dat A dataframe
+#' @param mydat A dataframe
 #' @param cols2ignore Character vector. Columns in the attribute table that should be ignored in the stratification.
 #' Default is c('primalX','primalY','npx_t_b','nstrtcl','probcut') which are legacy attributes.
 #' Furthermore columns of which the name starts with 'x' are ingored automatically.

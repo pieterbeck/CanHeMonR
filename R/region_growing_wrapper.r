@@ -258,14 +258,14 @@ grow_crowns <- function(r_file,
        #check that the crown didn't attain maximum diameter
        for (j in 1:(prob_cut/prob_step_down)){ #avoiding a while loop here
         nborder_pix. <- length(which(outp_[edge_pix_nrs] > 0))
-         #if the crown did attain maximum diameter increase the statistical threshold for growing the region
+         #if the crown did attain maximum diameter increase the statistical threshold and regrow the region
          if (nborder_pix. > 0){
           prob_cut_ <- prob_cut_ - prob_step_down
           outp_ <- CanHeMonR::grow_crown(testim = testim, prox_ind = prox_ind, startclus = n_startclus, prob_cut = prob_cut_)
           n_startclus <- outp_$n_startcluster
           outp_ <- outp_$crown
          }else{
-         #if it didn't carry on
+         #if it didn't attain maximum diameter, then carry on
            break
          }
         }
@@ -308,7 +308,7 @@ grow_crowns <- function(r_file,
          plot(crown_close, add = T, border = 'red', lwd = 2)
        }
        #############################################
-       #if the closing operation split the crown in two, keep only the one the plit falls in
+       #if the closing operation split the crown in two, keep only the one the seed falls in
        crown_close <- CanHeMonR::eliminate_split_crown(crown_pol = crown_close, testseed = testseed)
 
        if (plott & !parallel){
