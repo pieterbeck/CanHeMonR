@@ -160,5 +160,217 @@ RDVI <- function(df, outp_fname = NULL){
   return(outp)
 }
 
+#' @title Simple Ratio
+#' @description Calculate the simple ratio vegetation index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Jordat 1969
+#' @export
+SR <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- R800 / R670
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Modified Simple Ratio
+#' @description Calculate Modified Simple Ratio vegetation index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Chen 1996
+#' @export
+mod_SR <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (R800 / R670 - 1) / (sqrt(R800 / R670 ) + 1)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Optimised Soil-Adjusted Vegetation INdex
+#' @description Calculate Renormalized Difference Vegetation Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Rondeaux et al. 1996
+#' @export
+OSAVI <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (1 + 0.16) (R800 - R670) / (R800 + R670 + 0.16)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Modified Soil-Adjusted Vegetation Index
+#' @description Calculate Modified Soil-Adjusted Vegetation Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Qi et al. 1994
+#' @export
+MSAVI <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (2 * R800 + 1 - sqrt((2 * R800 + 1)^2 - 8*(R800 - R670))) / 2
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Triangular Vegetation Index
+#' @description Calculate Triangular Vegetation Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Broge and Leblanc 2000
+#' @export
+TVI <- function(df, outp_fname = NULL){
+  R550 <- get_band_of_wavelength(df, 550)
+  R670 <- get_band_of_wavelength(df, 670)
+  R750 <- get_band_of_wavelength(df, 750)
+  outp <- 0.5 * (120 * (R750 - R550) - 200 * (R670 - R550))
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Modified Triangular Vegetation Index 1
+#' @description Calculate Modified Triangular Vegetation Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Haboudane et al 2004
+#' @export
+MTVI1 <- function(df, outp_fname = NULL){
+  R550 <- get_band_of_wavelength(df, 550)
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- 1.2 * (1.2 * (R800 - R550) - 2.5 * (R670 - R550))
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Modified Triangular Vegetation Index 2
+#' @description Calculate Modified Triangular Vegetation Index 2
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Haboudane et al 2004
+#' @export
+MTVI2 <- function(df, outp_fname = NULL){
+  R550 <- get_band_of_wavelength(df, 550)
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (1.2 * (1.2 * (R800 - R550) - 2.5 * (R670 - R550)))/
+    sqrt((2 * R800 + 1)^2 - (6 * R800 - 5*sqrt(R670) ) - 0.5)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+
+#' @title Modified Chlorophyll Absorption Ratio Index 1
+#' @description Calculate Modified Chlorophyll Absorption Ratio Index 1
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Haboudane et al 2004
+#' @export
+MCARI1 <- function(df, outp_fname = NULL){
+  R550 <- get_band_of_wavelength(df, 550)
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- 1.2 * (2.5*(R800 - R670) - 1.3 * (R800 - R550))
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Modified Chlorophyll Absorption Ratio Index 2
+#' @description Calculate Modified Chlorophyll Absorption Ratio Index 2
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Haboudane et al 2004
+#' @export
+MCARI2 <- function(df, outp_fname = NULL){
+  R550 <- get_band_of_wavelength(df, 550)
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- 1.2 * (2.5*(R800 - R670) - 1.3 * (R800 - R550))/
+    sqrt((2 * R800 + 1)^2 - (6 * R800 - 5*sqrt(R670) ) - 0.5)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Enhanced Vegetation Index
+#' @description Calculate Enhanced Vegetation Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Liu and Huete 1995
+#' @export
+EVI <- function(df, outp_fname = NULL){
+  R400 <- get_band_of_wavelength(df, 400)
+  R670 <- get_band_of_wavelength(df, 670)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- 2.5 * (R800 - R670) / (R800 + 6*R670 - 7.5*R400 + 1)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Lichtenthaler Index 1
+#' @description Calculate Lichtenthaler Index 1
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Lichtenthaler et al 1996
+#' @export
+LIC1 <- function(df, outp_fname = NULL){
+  R680 <- get_band_of_wavelength(df, 680)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (R800 - R680) / (R800 + R680)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
 
 
