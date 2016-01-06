@@ -5,17 +5,16 @@
 #' @param image_fnames Filenames of images
 #' @param RGBseqs A 3 row matrix that indicates for each image which band nummers to display as red, green, and blue, respectively.
 #' It should have as many columns as image_fnames is long.
-#' @param crown_fnames Filenames of the crown polygon shapefiles associated with each of the images in image_fnames.
-#'
+#' @param crown_fnames Filenames of the vector (e.g. crown polygon) shapefiles associated with each of the images in image_fnames.
 #' The shapefiles must have the attributes
 #' primalX and primalY, which refer to the coordinates of the centers of the crowns in a reference image
-#' @param outp_dir Directory where plots for each crown are stored
+#' @param outp_dir Character. Directory where plots for each crown are stored
 #' @param overwrite Logical. Should the outp_dir be emptied prior to plotting? Default is T.
 #' Setting it to F can be handy when the code needs to be rerun after an
 #' unexpected interruption.
 #' @return A set of jpeg files of crowns plotted on top of their respective images.
 #' @export
-crown_inspector <- function(spatial_points, image_fnames, RGBseqs,crown_fnames, outp_dir, overwrite = T){
+crown_inspector <- function(spatial_points, image_fnames, RGBseqs, crown_fnames, outp_dir, overwrite = T){
 
   #clean up the output folder
   if (overwrite){
@@ -68,17 +67,17 @@ crown_inspector <- function(spatial_points, image_fnames, RGBseqs,crown_fnames, 
           ind <- which((crowns.df[,"primalX"] == primalX) & (crowns.df[,"primalY"] == primalY ))
           #set the plotting extent
           if (length(ind) == 1){
-            clip.ext <- raster::extend(raster::extent(crowns[ind,]),10)
+            clip_ext <- raster::extend(raster::extent(crowns[ind,]),10)
           }else{
             # for this coordinate, this crown dataset has no entry
             point_at_raw_coordinate <- sp::SpatialPoints(coords = cbind(primalX,primalY), proj4string = sp::CRS(raster::projection(crowns)))
-            clip.ext <- raster::extend(raster::extent(point_at_raw_coordinate),10)
+            clip_ext <- raster::extend(raster::extent(point_at_raw_coordinate),10)
           }
           # TODO build in escape clause if there is no crown for this coordinate
 
           options(show.error.messages = FALSE)
 
-          try(raster::plotRGB(get(paste0('im',j)),ext = clip.ext,RGBseqs[1,j],RGBseqs[2,j],RGBseqs[3,j],stretch='lin',axes=F,
+          try(raster::plotRGB(get(paste0('im',j)), ext = clip_ext,RGBseqs[1,j], RGBseqs[2,j],RGBseqs[3,j], stretch = 'lin', axes = F,
                           main = basename(image_fnames[j])))#,main=paste0("Seed & crown nr: ",i),
           options(show.error.messages = T)
 
