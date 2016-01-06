@@ -15,7 +15,6 @@ get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
   }
 
   if(class(spec_df) == "RasterBrick"){
-    spec_df <- spec_df[,grep("Nano", names(spec_df))]
 
     wavelengths <- as.numeric(unlist(lapply((strsplit(names(spec_df),split="[X.]")),function(x){x[2]})))
     my_column <- which.min(abs(wavelengths - wavelength_in_nm))
@@ -509,7 +508,7 @@ TCARI_over_OSAVI <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 CI <- function(df, outp_fname = NULL){
   R710 <- get_band_of_wavelength(df, 710)
@@ -527,7 +526,7 @@ CI <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 SRPI <- function(df, outp_fname = NULL){
   R430 <- get_band_of_wavelength(df, 430)
@@ -545,7 +544,7 @@ SRPI <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 NPQI <- function(df, outp_fname = NULL){
   R415 <- get_band_of_wavelength(df, 415)
@@ -563,7 +562,7 @@ NPQI <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 NPCI <- function(df, outp_fname = NULL){
   R430 <- get_band_of_wavelength(df, 430)
@@ -581,7 +580,7 @@ NPCI <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 CTRI1 <- function(df, outp_fname = NULL){
   R420 <- get_band_of_wavelength(df, 420)
@@ -599,7 +598,7 @@ CTRI1 <- function(df, outp_fname = NULL){
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
-#' @references 
+#' @references
 #' @export
 CTRI1 <- function(df, outp_fname = NULL){
   R695 <- get_band_of_wavelength(df, 695)
