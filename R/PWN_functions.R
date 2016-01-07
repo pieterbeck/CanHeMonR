@@ -1,3 +1,39 @@
+#' @title Tile A Raster's Extent
+#' @description Tile the extent object of a raster object for tiled processing
+#' @param r A raster object
+#' @param max_pixs Integer The maximum number of pixels that each tile can contain.
+#' @return A list of extent objects
+#' @export
+tile_raster_extent <- function(r, max_pixs){
+  full_extent <- raster::extent(r)
+  #the number of pixels in the raster object
+  full_npix <- prod(dim(r))
+  #the number of tiles to be generated
+  ntiles <- ceiling(full_npix/max_pixs)
+  nsplits_x_y <- ceiling(sqrt(ntiles))
+
+  #the limits of the tiles in the x and y dimension
+  x_dim_limits <- seq(full_extent[1],full_extent[2], length.out = nsplits_x_y+1)
+  x_dim_limits <- rep(x_dim_limits, each=2)
+  x_dim_limits <- x_dim_limits[-1]
+  x_dim_limits <- x_dim_limits[-(length(x_dim_limits))]
+  x_dim_limits <- rep(x_dim_limits, nsplits_x_y)
+
+  y_dim_limits <- seq(raster::extent(r)[3], raster::extent(r)[4], length.out = nsplits_x_y+1)
+  y_dim_limits <- rep(y_dim_limits, each=2)
+  y_dim_limits <- y_dim_limits[-1]
+  y_dim_limits <- y_dim_limits[-(length(y_dim_limits))]
+  y_dim_limits <- matrix(y_dim_limits, nrow = 2)
+  y_dim_limits <- as.vector(y_dim_limits[,rep(1:ncol(y_dim_limits), each = nsplits_x_y)])
+
+  tile_extents <- list()
+  for (i in 0:(length(x_dim_limits)/2 - 1)){
+    inds <- c(i*2+1,i*2+2)
+    tile_extents[[i+1]] <- raster::extent(c(x_dim_limits[inds],y_dim_limits[inds]))
+  }
+  return(tile_extents)
+}
+
 #' @title Avoid Data Frames With Too Many Rows
 #' @description  Ensure that a dataframe has <= maxsamp rows.
 #' If it doesn't, sample a subset (n=maxsamp) rows from a data frame

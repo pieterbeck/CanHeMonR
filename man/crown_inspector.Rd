@@ -15,12 +15,11 @@ crown_inspector(spatial_points, image_fnames, RGBseqs, crown_fnames, outp_dir,
 \item{RGBseqs}{A 3 row matrix that indicates for each image which band nummers to display as red, green, and blue, respectively.
 It should have as many columns as image_fnames is long.}
 
-\item{crown_fnames}{Filenames of the crown polygon shapefiles associated with each of the images in image_fnames.
-
+\item{crown_fnames}{Filenames of the vector (e.g. crown polygon) shapefiles associated with each of the images in image_fnames.
 The shapefiles must have the attributes
 primalX and primalY, which refer to the coordinates of the centers of the crowns in a reference image}
 
-\item{outp_dir}{Directory where plots for each crown are stored}
+\item{outp_dir}{Character. Directory where plots for each crown are stored}
 
 \item{overwrite}{Logical. Should the outp_dir be emptied prior to plotting? Default is T.
 Setting it to F can be handy when the code needs to be rerun after an
