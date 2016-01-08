@@ -3,35 +3,80 @@
 #' @param r A raster object
 #' @param max_pixs Integer The maximum number of pixels that each tile can contain.
 #' @return A list of extent objects
+#' @seealso merge_pols_intersected_by_line
 #' @export
 tile_raster_extent <- function(r, max_pixs){
   full_extent <- raster::extent(r)
   #the number of pixels in the raster object
   full_npix <- prod(dim(r))
   #the number of tiles to be generated
-  ntiles <- ceiling(full_npix/max_pixs)
-  nsplits_x_y <- ceiling(sqrt(ntiles))
+  if (full_npix < max_pixs){
+    cat('The raster has fewer than ',max_pixs,'pixels and will not be tiled.\n')
+    tile_extents <- list(full_extent)
+  }else{
+    ntiles <- ceiling(full_npix/max_pixs)
+    nsplits_x_y <- ceiling(sqrt(ntiles))
 
-  #the limits of the tiles in the x and y dimension
-  x_dim_limits <- seq(full_extent[1],full_extent[2], length.out = nsplits_x_y+1)
-  x_dim_limits <- rep(x_dim_limits, each=2)
-  x_dim_limits <- x_dim_limits[-1]
-  x_dim_limits <- x_dim_limits[-(length(x_dim_limits))]
-  x_dim_limits <- rep(x_dim_limits, nsplits_x_y)
+    #the limits of the tiles in the x and y dimension
+    x_dim_limits <- seq(full_extent[1],full_extent[2], length.out = nsplits_x_y+1)
+    x_dim_limits <- rep(x_dim_limits, each=2)
+    x_dim_limits <- x_dim_limits[-1]
+    x_dim_limits <- x_dim_limits[-(length(x_dim_limits))]
+    x_dim_limits <- rep(x_dim_limits, nsplits_x_y)
 
-  y_dim_limits <- seq(raster::extent(r)[3], raster::extent(r)[4], length.out = nsplits_x_y+1)
-  y_dim_limits <- rep(y_dim_limits, each=2)
-  y_dim_limits <- y_dim_limits[-1]
-  y_dim_limits <- y_dim_limits[-(length(y_dim_limits))]
-  y_dim_limits <- matrix(y_dim_limits, nrow = 2)
-  y_dim_limits <- as.vector(y_dim_limits[,rep(1:ncol(y_dim_limits), each = nsplits_x_y)])
+    y_dim_limits <- seq(raster::extent(r)[3], raster::extent(r)[4], length.out = nsplits_x_y+1)
+    y_dim_limits <- rep(y_dim_limits, each=2)
+    y_dim_limits <- y_dim_limits[-1]
+    y_dim_limits <- y_dim_limits[-(length(y_dim_limits))]
+    y_dim_limits <- matrix(y_dim_limits, nrow = 2)
+    y_dim_limits <- as.vector(y_dim_limits[,rep(1:ncol(y_dim_limits), each = nsplits_x_y)])
 
-  tile_extents <- list()
-  for (i in 0:(length(x_dim_limits)/2 - 1)){
-    inds <- c(i*2+1,i*2+2)
-    tile_extents[[i+1]] <- raster::extent(c(x_dim_limits[inds],y_dim_limits[inds]))
+    tile_extents <- list()
+    for (i in 0:(length(x_dim_limits)/2 - 1)){
+      inds <- c(i*2+1,i*2+2)
+      tile_extents[[i+1]] <- raster::extent(c(x_dim_limits[inds],y_dim_limits[inds]))
+    }
+    cat('The extent of the raster was tiled into ',length(tile_extents),' tiles\n')
   }
   return(tile_extents)
+}
+
+
+#' @title Merge Polygons Intersected By Lines
+#' @description When an object-identification function is run on raster image in tiled mode (for memory management or paralel processing),
+#' The resulting objects are intersected by lines that correspond to the tile borders. This function allows you to mergein a SpatialPolygons
+#' object all the polygons that are split by a set of SpatialLines
+#' @param spat_pols A SpatialPolygons object
+#' @param spat_lines A SpatialLines object, e.g. as created by tile_raster_extent
+#' @param original_res The original resolution of the input image the Polygons were calculated from. Default = 0.15
+#' @return A SpatialPolygons object
+#' @seealso tile_raster_extent
+#' @export
+merge_pols_intersected_by_lines <- function(spat_pols, spat_lines, original_res = 0.15){
+  browser()
+  #Intersect it with the polygons, buffering the latter slightly to ensure it intersects the line when touching
+  #crown_pols_buff <- raster::buffer(SpatPols,.05,dissolve=F)
+  crown_pols_buff <- rgeos::gBuffer(spat_pols, width = original_res + 0.01, byid = T)
+  crowns_on_border <- raster::intersect(crown_pols_buff, spat_lines)
+
+#   plot(spat_pols,axes=T)
+#   plot(spat_lines, add=T, col=3)
+#   plot(crowns_on_border,col=2,add=T)
+
+  #merge the polygons that share a border
+  crowns_on_border <- rgeos::gUnionCascaded(crowns_on_border)    ########## CONTINUE HERE - THIS BECOMES OF LENGTH 1
+  crowns_on_border <- sp::disaggregate(crowns_on_border)  ######### testing disaggregate.....
+  #  plot(crowns_on_border, col=3, add=T)
+  tt <- rgeos::gDifference(crown_pols_buff, crowns_on_border)
+  #raster::buffer cannot buffer inward
+  crowns_on_border <- rgeos::gBuffer(crowns_on_border, width = -.05)
+  #plot(tt)
+
+  crowns_on_border <- sp::spChFIDs(crowns_on_border,as.character(1:length(crowns_on_border)))
+  tt <- sp::spChFIDs(tt, as.character((length(crowns_on_border)+1) :(length(crowns_on_border) + length(tt))))
+                                      ########## tt also appears LENGTH 1
+  crown_pols <- maptools::spRbind(crowns_on_border, tt)
+  return(crown_pols)
 }
 
 #' @title Avoid Data Frames With Too Many Rows
@@ -70,6 +115,7 @@ clip_polygons2rasters <- function(SpatPol,r.fnames){
     r.extent.polygon <- as(raster::extent(r), 'SpatialPolygons')
     raster::projection(r.extent.polygon) <- raster::projection(r)
     r.extent.polygon <- sp::spTransform(r.extent.polygon,CRSobj=sp::CRS(raster::projection(SpatPol)))
+
     if (counter == 0){
       r.extent.polygons <- r.extent.polygon
     }else{

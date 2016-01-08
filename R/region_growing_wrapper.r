@@ -290,7 +290,7 @@ grow_crowns <- function(r_file,
        if (plott & !parallel){
         crown_raw <- raster::rasterToPolygons(outp_,fun = function(x){x > 0})
         require(maptools)
-        crown_raw <- maptools::unionSpatialPolygons(crown_raw,ID=rep(1,length(crown_raw)))
+        crown_raw <- maptools::unionSpatialPolygons(crown_raw, ID = rep(1, length(crown_raw)))
         plot(crown_raw,add = T,border = 'white')
        }
 
