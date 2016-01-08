@@ -53,7 +53,6 @@ tile_raster_extent <- function(r, max_pixs){
 #' @seealso tile_raster_extent
 #' @export
 merge_pols_intersected_by_lines <- function(spat_pols, spat_lines, original_res = 0.15){
-  browser()
   #Intersect it with the polygons, buffering the latter slightly to ensure it intersects the line when touching
   #crown_pols_buff <- raster::buffer(SpatPols,.05,dissolve=F)
   crown_pols_buff <- rgeos::gBuffer(spat_pols, width = original_res + 0.01, byid = T)
@@ -64,20 +63,46 @@ merge_pols_intersected_by_lines <- function(spat_pols, spat_lines, original_res 
 #   plot(crowns_on_border,col=2,add=T)
 
   #merge the polygons that share a border
-  crowns_on_border <- rgeos::gUnionCascaded(crowns_on_border)    ########## CONTINUE HERE - THIS BECOMES OF LENGTH 1
-  crowns_on_border <- sp::disaggregate(crowns_on_border)  ######### testing disaggregate.....
+  crowns_on_border <- rgeos::gUnionCascaded(crowns_on_border)
   #  plot(crowns_on_border, col=3, add=T)
   tt <- rgeos::gDifference(crown_pols_buff, crowns_on_border)
   #raster::buffer cannot buffer inward
   crowns_on_border <- rgeos::gBuffer(crowns_on_border, width = -.05)
   #plot(tt)
+  #the rgeos operations, made the objects of length 1, so disaggregate them
+  tt <- sp::disaggregate(tt)
+  crowns_on_border <- sp::disaggregate(crowns_on_border)
 
   crowns_on_border <- sp::spChFIDs(crowns_on_border,as.character(1:length(crowns_on_border)))
   tt <- sp::spChFIDs(tt, as.character((length(crowns_on_border)+1) :(length(crowns_on_border) + length(tt))))
-                                      ########## tt also appears LENGTH 1
   crown_pols <- maptools::spRbind(crowns_on_border, tt)
   return(crown_pols)
 }
+
+#' @title Place Point At Maximum Location
+#' @description Convert a SpatialPolygon to a SpatialPoint, assigning the point to the location inside the polygong that
+#' has the highest value in a matching raster
+#' @param r A raster layer
+#' @param pol A SpatialPolygon
+#' @return A SpatialPoint
+#' @export
+point_at_highest_value_in_polygon <- function(r , pol){
+  crop_ext <- raster::extent(sp::bbox(pol))
+  r <- raster::crop(r, crop_ext)
+  rmax <- as.vector(raster::extract(r, pol, fun = function(x, na.rm = T){max(x,na.rm=T)}))
+
+  if (is.na(rmax) | !is.finite(rmax)){
+    return(NULL)
+  }else{
+    rm <- r
+    #set all pixels except for the maximum value pixel to NA
+    rm <- raster::reclassify(r, right=F, c(-Inf,rmax,NA))
+
+    maxpoint <- raster::rasterToPoints(rm,spatial=T)[1,]
+    return(maxpoint)
+  }
+}
+
 
 #' @title Avoid Data Frames With Too Many Rows
 #' @description  Ensure that a dataframe has <= maxsamp rows.

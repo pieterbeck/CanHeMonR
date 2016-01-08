@@ -226,7 +226,7 @@ grow_crowns <- function(r_file,
 
   stime <- system.time({
 
-    crown_pols <- foreach::foreach(i = seeds_to_run, .combine = maptools::spRbind,  .multicombine=F, .errorhandling='remove') %op% {
+    crown_pols <- foreach::foreach(i = seeds_to_run, .combine = maptools::spRbind, .inorder=F, .multicombine=F, .errorhandling='remove') %op% {
 
       testseed <- seeds[i,]
       #require(rgdal)
