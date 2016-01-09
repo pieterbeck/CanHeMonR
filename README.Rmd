@@ -1,0 +1,557 @@
+---
+title: "PWN workflow and functions overview"
+author: "Pieter Beck"
+date: "Monday, August 11, 2014"
+output:
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+# To do
+
+* Does the fact that orthos have more pixels per polygon, bias the model fits in decline_trees_RS_analysis?
+* How will you handle differing pixel and sample size, when you incorporate Landsat?
+* When comparing index means, then you should do bandwise means of objects first, before calculating non-linear indices !
+
+# CanHeMonR package
+An overview of the tasks that can be performed using the CanHeMonR package.
+
+## Rough crown delineation - watershed_crown_delineation.r
+The start of a crown detection algorithm - not very robust yet
+#### Challenge
+Starting from a multispectral image, you want to roughly identify all the trees as polygons of their crowns
+
+#### Input
+* A multi-band raster image
+* Spectral bands and/or spectral indices, and respective cut-off values, that allow you to mask out the background
+* Criteria for a watershed algorithm
+
+#### Output
+* A rough SpatialPolygons object of potential crowns
+
+```{r, eval=FALSE}
+
+require(CanHeMonR)
+ watershed_tree_detection(
+   image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
+   #extent = raster::extent(c(747400, 747420, 4463900, 4463920)),
+   extent = raster::extent(c(747400, 747600, 4463800, 4464000)),
+   index_name = 'NDVI',
+   bg_mask = list('NDVI',0.40,800, 1200),
+   plott = T,
+   neighbour_radius = 1,
+   watershed_tolerance = 0.008,
+   rough_crowns_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_pols.shp',
+   max_npix = 50000,
+   nWorkers = 4,
+   parallel = T
+   )
+```
+
+## Crown detection - polygons_to_seeds.r
+#### Input
+* A rough SpatialPolygons object of potential crowns
+* Optionally, a multi-band raster image
+
+#### Output
+* A point shapefile denoting (suspected) tree crowns
+* The seed can either be put at the polygon's centroid, or at the pixel of highest NDVI
+
+#### To Do
+
+* write a shadow-seaker function, given a maximum tree height, sun azimuth
+if there is no pixel with low PAN value in the projected shadow, your seed might not be a tree top (unless there is another
+seed in the projected crown)
+
+* if Ganguly's the tree non-tree mask is good, than the shadow-seaker might not be neScessary...
+
+```{r, eval=FALSE}
+
+require(CanHeMonR)
+polygons_to_seeds(
+   rough_crowns_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_pols.shp',
+   seed_placement = 'maxval',
+   image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
+   index_name = 'NDVI',
+   nWorkers = 4,
+   parallel = T,
+   outp_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp'
+   )
+```
+
+## Filtering crown seeds that don't have a tree-like shadow - shadow_based_seed_filter.r
+
+```{r, eval=FALSE}
+shadow_based_seed_filter(
+  seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp',
+  image_fname = image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
+  shadow_mask = list(800, 801),
+  x_shift = -4,
+  y_shift = 4,
+  shadow_diameter = 5,
+  outp_seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds_shadow_masked.shp' )
+```
+
+### To Do
+ * How does this perform in dense forest?
+ * Very crappy trees hardly produce a shadow...
+
+## Warping seed points for crown delineation - tps2dseeds.r
+#### Challenge
+New imagery doesn't always align perfectly with existing (reference) imagery, for which crown seeds (as points) are available. 
+Rather than warp the new imagery to match the reference, this code attempts to warp the available seeds for crown delineation in the new imagery.
+#### Input
+* A .shp file with many points (seeds) placed in crowns of a reference image
+* A .shp file with some points (seeds) placed in crowns of a new image
+* A two-column table that gives for points in the new seed file, their respective seed number (FID in Arcgis) in the reference seed file
+
+#### Output
+A .shp file of the reference seed points warped using the available point-pairs. 
+The X and Y coordinates of the original points in reference_seeds_shp are saved as the fields **primalX** and **primalY** in the attribute table of the output
+The output is intended to grow crowns in the new image.
+```{r, eval=FALSE}
+workdir <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/'
+target_ref_ID_pairs <- read.csv(file.path(workdir,'150727/150727_mca/link_seeds_to_141120_rgb_all_trees.csv'))
+target_ref_ID_pairs <- target_ref_ID_pairs[complete.cases(target_ref_ID_pairs),]
+
+reference_seeds_shp <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/141120/141120_rgb/141120_rgb_all_trees.shp'
+target_seeds_shp <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150727/150727_mca/150727_mca_some_trees.shp'
+outp_shp_fname <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150727/150727_mca/150727_mca_all_trees_by_tps.shp'
+require(CanHeMonR)
+tps2d_seeds(reference_seeds_shp, target_seeds_shp, target_ref_ID_pairs, outp_shp_fname)
+```
+
+## Crown delineation - region_growing_wrapper.r
+
+#### Input
+
+* A very high resolution image file
+* A shape file of seeds (points) placed (manually) at the center of crowns
+
+#### Output
+
+* A polygon shape file of crowns grown around the seeds. 
+* The polygons have as attributes primalX and primalY which contain the original coordinates of their seed. These are either passed from the attributes of the
+seeds, or, if not present in the seeds' arguments, generated from the seed coordinates.
+
+```{r, eval=FALSE}
+
+#flight <- '150128_cir'
+flight <- '141120_rgb_mosaic'
+#flight <- '150128_hyper'
+#flight <- '150727_rgb'
+#flight <- '150727_mca'
+
+#raster image to run crown growing on
+r_file <- switch(flight,
+                 '150128_cir' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150128_cir/150128_cir.bsq',
+                 '141120_rgb_mosaic' ='H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/141120_rgb_mosaic/141120_RGB_mosaic.bsq',
+                 '150128_hyper' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150128_hyperspectral/150128_hyperspectral.bsq',
+                 '150727_rgb' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_rgb/150727_rgb.bsq',
+                 '150727_mca' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq')
+
+#shapefile of seeds
+seed_shpfile <- switch(flight,
+                       '150128_cir' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150128/150128_cir/150128_cir.shp',
+                       '141120_rgb_mosaic' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/141120/141120_rgb/141120_rgb_all_trees.shp',
+                       '150128_hyper' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150128/150128_hyper/150128_hyper.shp',
+                       '150727_rgb' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/141120/141120_rgb/141120_rgb_all_trees.shp',
+                       '150727_mca' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150727/150727_mca/150727_mca_all_trees_by_tps.shp')
+
+#the probability [in %] cut off in the chi square distribution that determines the cut-off in Mahalanobis distance
+#higher prob.cut values produce larger crowns
+prob_cut <- 99
+#as long as the region grows all the way to the max.crown.radius, prob.cut will be stepped down by prob.step.down and the regino grown again
+prob_step_down <- 2
+#output shapefile to write crown polygons to
+outp_crown_shp_filename <- switch(flight,
+                                  '150128_cir' = '',
+                                  '141120_rgb_mosaic' = 'E:/beckpie/temp/crown_141120_rgb_all_trees',
+                                  '150128_hyper' = '',
+                                  '150727_rgb' = 'E:/beckpie/temp/crown_150727_rgb_all_trees',
+                                  '150727_mca' = 'E:/beckpie/temp/crown_150727_mca_all_trees')
+
+require(CanHeMonR)
+grow_crowns(r_file = r_file,
+                        seed_shpfile = seed_shpfile,
+                        avoid_recalculation = T,
+                        prob_cut = 99,
+                        prob_step_down = 2,
+                        seed_nrs = NA,#3460:1e6,
+                        outp_crown_shp_filename,
+                        max_crown_RADIUS_in_m = 4,
+                        min_crown_RADIUS_in_m = 0.9,
+                        plott = F, RGBseq = c(1,2,3),
+                        parallel = T, nWorkers = 22)
+
+
+```
+
+request up to nWorkers*170 trees for a 9 days period of processing
+
+## Inspect crown delineation efficiency - evaluate_crown_growing_efficiency.r
+
+#### Challenge
+
+After running crown delineation, it is valuable to inspect how computational time was spent, and whether the parameters of the delineation
+algorithm could be improved. When the prob_cut setting in region_growing_wrapper is too high, or the maximum crown diameter too small, then
+the algorithm will grow the crown too large (ie up to the maximum diameter), reduce the cut-off for the similarity criterion (mahalanobis distance) and start growing the crown all over... until it doesn't grow up to the maximum diameter anymore. This can eat up a disproportionate amount of computational time. **evaluate_crown_growing_efficiency** allows you to inspect where computational time was spent.
+
+#### Input
+
+* A polygon shapefile as produced by region_growing_wrapper
+
+#### Output
+
+Graphs of distributions that show on which crowns most computational time is spent
+
+```{r, eval=FALSE}
+workdir <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final'
+  workdir <- 'C:/Users/pieterbeck/Documents/temp/PWN/flights_final'
+  
+  #to be run for each of the flights
+  flight <- '141120_rgb_mosaic'
+  flight <- '150727_rgb' #700. 546, 435
+  flight <- '150727_mca'
+  
+  outp_crown_shp_filename <- switch(flight,
+                                    '150727_mca' = file.path(workdir,'shp+stats/150727/150727_mca/crown_150727_mca_all_trees_99.shp'),
+                                    '141120_rgb_mosaic' = file.path(workdir,'shp+stats/141120/141120_rgb/crown_141120_rgb_all_trees'),
+                                    '150727_rgb' = file.path(workdir,'shp+stats/150727/150727_rgb/crown_150727_rgb_all_trees')
+  )
+  evaluate_crown_growing_efficiency(outp_crown_shp_filename)
+```
+
+## Warping crowns using segmentation results
+
+#### Challenge
+
+Sometimes image segmentation is able to detect crowns well, yet when the image doesn't overlay well on the existing database of crowns (with the identifying attributes
+primalX and primalY) then it is hard to link the segmented crowns with the database.
+**shift_polygons_to_points** uses an existing polygon .shp of crowns and warps these to the nearest centroids of crowns estimated using segmentation.
+The thin plate spline reprojection transformation can be calibrated using the centroids of the polygons to be warped, or the centroids of a different polygon data set. This is useful in the case the centroids to be warped have undergone crown trimming. In that cases their
+untrimmed ancestor crowns can be used to calibrate the tps model.
+If the exisiting polygon .shp has attributes like primalX and primalY they can be maintained in the output
+
+
+#### Output
+A crown polygon .shp for the segmented image, with primalX and primalY attributes.
+
+```{r, eval=FALSE}
+workdir <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/'
+Polygon_shp <- file.path(workdir,'/shp+stats/150727/150727_mca/crown_150727_mca_all_trees_99.shp')
+
+wd <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/shp+stats/150727/150727_flir'
+point_shp <- file.path(wd,'indices_centroide2.shp')
+outp_fname <- file.path(wd,'crown_150727_flir_all_trees_99_tps.shp')
+extent_to_process <- raster::extent(c(747287,748000,4463535,4464600))
+shift_polygons_to_points(polygon_shp, point_shp, outp_fname, extent_to_process = NA, attributes_to_retain = c('primalX' ,'primalY'))
+```
+
+## Mask the shadow sections of a crown - assigns_crown_cells_quantile
+
+#### Challenge
+
+Portions of crowns can be quite heavily shaded, comprising the spectral indices from the. Furthermore, when crowns delineated in 
+multispectral imagery, are used to estimated crown temperature in thermal imagery, it is particularly useful to exclude the cooler, shadow-section of the crown.
+This code allows one to calculate for every pixel in a crown its quantile, ie rank, based on a single spectral band or index.
+This value (e.g. NIR reflectance rank in the crown) can then be used as a mask while extract thermal metrics from crowns.
+
+#### Input
+* A raster file to draw values from, and that will serve as the spatial template for the output
+* A polygon shapefile depicting crowns that overlays r
+* A filename for the raster output
+* An optional filename from .shp output of trimmed crown polygons
+* The quantile values that are used to determine the trimmed crowns
+
+#### Output
+A raster file, with the same spatial attributes as r and values between 0 and 100 for cells in polygons, and NA outside polygons.
+An optional shp file of trimmed polygons.
+
+```{r, eval=FALSE}
+flight <- '150727_mca'
+workdir <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/'
+
+r_layer <- switch(flight,
+                 '150727_mca' = 
+                  raster::raster(file.path(workdir, '/150727_mca/150727_mca.bsq'),band=5))
+crown_shp <- switch(flight,
+                  '150727_mca' = file.path(workdir,'/shp+stats/150727/150727_mca/crown_150727_mca_all_trees_99.shp'))
+outp_tif <- switch(flight,
+                   '150727_mca' = 'E:/beckpie/temp/crown_150727_mca_quantile_800.tif')
+
+temp_outp <-'E:/beckpie/temp/trimmed.tif'
+outpname_shp <- 'E:/beckpie/temp/trimmed.tif'
+outpname_r <-  'E:/beckpie/temp/trimmed.shp'
+require(CanHeMonR)
+
+#debug(assign_crowncells_quantile)
+test <- assign_crowncells_quantile(r = r_layer, crown_shp = crown_shp, outpname_r = outpname_r, outpname_shp = outpname_shp, plott=F, quantiles_to_keep = 66:100)
+```
+
+
+## Calculate spectral indices for crowns - spectral_indices_for_crowns.r
+
+Calculate one or more spectral indices for individual
+tree crowns using a provided raster image and write the output to a .shp
+
+#### Input
+* Shapefile depicting crowns
+* Raster file of the image to calculate the spectral index from.
+The bands of the raster should be named following the Quantalab convention X700.000000.Nanometers
+* Character vector with the names of a spectral indices implemented as a function in CanHeMonR. e.g. "G_over_B".
+* outname Filename for a shapefile of the output
+
+#### Output
+A point shapefile with attribute table, with the points placed at the centroid of each crown.
+The attribute table of the shp file contains a column for each spectral index.
+
+
+```{r, eval=FALSE}
+require(CanHeMonR)
+flight <- '150727_mca'
+
+crown_shp <- switch(flight,
+                  '150727_mca' = 'E:/beckpie/temp/crown_150727_mca_all_trees_99.shp')
+r_fname <- switch(flight,
+                  '150727_mca' = 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq')
+
+spectral_indices_for_crowns(crown_shp = crown_shp, r_fname = r_fname, index_names = c("G_over_B","BGI2","RDVI","NDVI"), 
+                            outname = "E:\\beckpie\\temp\\output_example2.shp")
+
+```
+
+### A library of spectral indices - spectral_indices.r
+
+Implementations of spectral indices that can be called from **spectral_indices_for_crowns**.
+The same functions can be applied to data frames where columns represent spectral bands, or raster bricks,
+where layers do the same, as long as the columns/layers are named using the Quantalab convention *X700.000000.Nanometers*
+
+```{r, eval=FALSE}
+# Create and NDVI image from a multispectral image
+my_ms_data <- raster::brick('H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq')
+
+require(CanHeMonR)
+my_NDVI <- NDVI(my_ms_data, outp_fname = 'E:/beckpie/temp/crown_150727_mca_NDVI.tif')
+
+# Calculate NDVI from a data frame extracted per-polygon from a multipsectral image
+```
+
+
+## Merge spectral indices calculated from different images - merge_pnt_shp_files_by_attributes.r
+
+The extraction of spectral indices from tree crowns is done independently for different images, using their particular crown data set.
+**spectral_indices_for_crowns.r** ensures that during the index extraction process the original id of the crown is maintained (through the 'primal_X'
+and 'primal_Y' attributes).
+**merge_pnt_shp_files_by_attributes** combines the indices extracted from different images into a single point .shp.
+
+he attributes in the output have a 'i#' prefex referring
+to the input it drew from. It also writes away a text file that links the ix numbering in the attribute names of the .shp back to the filenames
+of the single-image files. The filename of the text file is outp_shp with '.txt' appended
+
+### Visualize result of merger - pairsplot
+
+**pairsplot** A customized pairsplot function that allows you to only display particular attributes of the merged shapefile.
+
+## Take a statistical sample of the crowns, stratified by multiple spectral indices
+
+For field inspections and validation, not all mapped crowns can be inspected. Therefore a sample of the crown population needs to be drawn
+that covers as exhaustively as possible, the range of values of _all_ the spectral indices.
+
+```{r, eval=FALSE}
+flight <- '150727_mca'
+workdir <- 'H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final'
+inp_shp <- switch(flight,
+                  '150727_mca' = file.path(workdir,'shp+stats/150727/150727_mca/crown_150727_mca_all_trees_99_indices.shp'))
+shp_outname <-  switch(flight,
+                  '150727_mca' = 'E:/beckpie/temp/testsamp.shp') 
+require(CanHeMonR)
+tt <- samplestratified_shp(shp_fname = inp_shp, shp_outname, plott=T,nsamples=100)
+
+```
+
+## Visually inspect crowns - crown_inspector.r
+
+####
+To ensure that crown delineation was succesful, it is useful to plot delineated crowns on a background of the image used to create it,
+and along with the seed used to start the delineation.
+Furthermore, it is useful to this delineation for the representation of an individual crown in multiple image sources (e.g. rgb and multispectral).
+
+#### Input
+* Point shapefiles of seeds
+* Matching image filenames used to delineate the crowns
+* Polygon shapefile depicting the result of the crown delineation
+
+#### Output
+* Plots of the inputs written to a seperate file for each crown in a directory of choice
+
+## PWN_functions.R
+Supporting functions used a.o. in **decline_trees_compile_RS.r** and in **decline_trees_RS_analysis.r**
+
+### Avoid Data Frames With Too Many Rows - samp_df
+### Clip Spatialpolygons To The Extent Of A Raster - clip_polygons2rasters
+### Find A Polygon's Neighbour Polygons - identify_n_neighbours
+### Subtract Band And Polygon Specific Median From Digital Numbers - subtract_control_median
+### Tile the extent object of a raster object for tiled processing - tile_raster_extent
+### Eliminate the effect of tiled processing on delineated polygons - merge_pols_intersected_by_lines
+### Convert a polygon to the point where a raster is at its maximum - point_at_highest_value_in_polygon
+
+## PWN_plotting_functions.R
+Functions to mask to the PWN buffer zone or to add it to a map. Used in **??**
+
+### Add Outline of the PT PWN Buffer Zone to an Existing Plot - add_PT_buffer_parishes_borders
+### Mask a Raster File to Only Retain Data within the PT PWN Buffer Zone - mask_to_PT_buffer_zone
+## segment_classification_functions.R
+Functions that support the classification of segments into target objects
+
+## fit_function_to_canopy_health.index.r
+Fits a simple polynomial of the form y ~ scale*(x^rate)+interc
+ to a time series of canopy health index (x) using nls
+(called from **decline_trees_RS_analysis**)
+
+### region_growing_functions.r
+Executes region growing from windows of single or multi-layer rasters around seed points
+(called from **region_growing_wrapper.r**)
+calls **remoteness_functions.r**
+
+### remoteness_functions.r
+(called from **region_growing_functions.r**)
+
+
+#### Input
+* Polygon .shp with tree crowns
+* Raster image to calculate spectral indices from
+* Names of spectral indices to calculate
+* Name of the output shapefile
+
+#### Output 
+Output will be generated as a point shapefile with attribute table, with the points placed at the centroid of each crown.
+The attribute table of the shp file contains a column for each spectral index.
+
+# Workflow
+
+# Summarizing PT-ESP buffer zone
+
+## fty_PTES_border_zones.r
+Calculates 25 m FTY maps (services element 2 of high res forest layers) for the official buffer zone along the PT-ES border, and for 20 km and 40 km buffer zones either side of the border. It saves tables of FTY (in km2) within the buffer zones
+
+#### output
+"E:/beckpie/PWN/R_code/rdata/fty_PTES_border_zones_tables.rdata"
+
+## fty_PTES_border_zones.Rmd
+Summarizes the forest cover in the official and 20  and 40 km buffer zones
+
+# Flight campaing planning
+## Areas_to_fly_summer_2015.r
+Creates and measures the 40.000 ha area designated for imaging this summer. It then cuts it up into lots and blocks and gives summary statistics for each
+
+## Flight_cost_TravellingSalesman_approach.r
+Simulating cost of covering buffer zone from aircraft. Calculate the cost/distance required to cover a progressive percentage of coniferous pixels in the PT buffer zone.
+
+## Handling ortophoto collections
+
+### create_overview_of_rasters.r
+
+#### Challenge
+When vizualizing in ArcGis a collection of ortophotos it can be hard to figure out which photo covers a particular location.
+_create_overview_of_rasters.r_ creates a polygon shapefile of all the rasters in a directory, with filenames as attributes.
+These can be used as labels in vizualisations or in queries.
+
+
+#### Output
+Tables with required flight distance to cover a given % of coniferous cover in a chosen area. Different output files 
+are produced for each threshold beyond which a coarse (1 km pixel) is considered 'coniferous'
+"E://beckpie//PWN//R_code//rdata//flight_length_simulation_",aggregation.minimum.cover,"perc_aggregation_v2.rdata"
+
+# Feasibility study 2014-2015 
+
+## Spain_field_sites_size_calculations.r
+Calculate the exact area of the Granadilla forest site
+
+## Field data summary - Granadilla_forest_field_data_summary.Rmd
+Summarizes the field survey data from Granadilla forest
+
+#### Input
+"E:/beckpie/PWN/R_code/rdata/fty_PTES_border_zones_tables.rdata"
+
+## Graphs for feasibility study report
+
+### boxplot_indice_hyper.r & boxplot_indice_cir.r
+Generates figure for the pilot study report. Plots hyperspectral indices per field-observed canopy decline level.
+The hyperspectral index values are those provided in tab format by Pablo.
+
+### field_dat_graphs_for_report.r
+Summarizes the field data for the pilot study report
+
+
+# Processing image segmentation results
+
+### classify_segmentation_supervised.r
+rF Classifies a polygon shapefile  into 'EG' and 'NO' based on a training field called 'veg'(with values 'EG' and 'NO') and predictor
+variables in the other fields (band statistics for the polygons generated by Definiens).
+TO DO: Alternatively and additionally, an NDVI cut-off can be applied to the polygons in test_decline_trees_complie_RS.r
+
+#### Input
+polygons that result from image segmentation with polygon level attributes (e.g. mean and sd radiance per band) as attributes
+
+#### Output
+Polygon shapefile with only the polygons classified as 'EG' by the rF. These do NOT display properly in Arcgis !?
+
+## Case studies
+
+### PTtest_decline_trees_compile_RS.r
+Executes the workflow for the PT test area (summer 2014). This site had insufficient field data
+
+#### executes
+decline_trees_compile_RS.r
+
+### PTtest_decline_trees_RS_analsysis.r
+Executes the workflow for the PT test area (summer 2014). This site had insufficient field data
+
+#### executes
+decline_trees_RS_analysis.r
+
+## gathering RS data over segments
+
+### decline_trees_compile_RS.r
+#### Input
+shapefile of coniferous forest patches from classify_segmentation.r
+names of relevant RS data
+
+* choose the maximum nr of RS pixels per polygon
+max.samp.per.polygon <- 1000
+
+* choose the inward buffering to apply to the polygons
+inward.buffer <- -10 #in m (the units of the polygon data)
+
+* minimum polygon area after buffering*
+min.polarea <- 10*10
+
+* choose the nr of neighbouring polygons to consider when checking for change
+n.neighbours <- 8
+
+* RS data
+in lists with elements, date, fname (filenames of raster files), sensors, bands
+
+#### Output
+* Decline.list
+list for each patch/polygon
+containing attributes from shapefile (ie declinging trees or  confirmed no declining trees
+and RS data
+* Decline.cluster
+SpatialPolygons of original EG patches
+
+## Detecting change
+
+### decline_trees_RS_analysis.r
+#### Input
+list created by decline_trees_compile_RS.r
+
+.shp file with chosen attributes for each patch/polygon, based on comparison of RS data for a polygon and its neighbours
+
+# Sandbox
+
+## crowns/crown_inspector.r
+
+## Project_PT_nuts_web_app.r
+prepares the PT nuts for upload in http://geoportal.lneg.pt/geoportal/mapas/index.html
