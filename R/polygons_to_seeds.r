@@ -18,8 +18,8 @@
 #' @export
 polygons_to_seeds <- function(rough_crowns_shp_fname, seed_placement = 'centroid',image_fname, index_name = 'NDVI', parallel = F, nWorkers = 2,
                               outp_shp_fname, append = F){
-  crown_pols2 <- raster::shapefile(rough_crowns_shp_fname)
 
+  crown_pols2 <- raster::shapefile(rough_crowns_shp_fname)
 
   #set up the cluster for parallel processing if requested
   try(parallel::stopCluster(cl), silent=T)
