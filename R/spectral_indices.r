@@ -43,97 +43,6 @@ get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
   return(my_dat)
   }
 
-#' @title Lichtenhaler (Red Over Blue) Index
-#' @description Calculate Lichtenhaler red over blue index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
-#' @return A vector with the value of the index
-#' @export
-R_over_B <- function(df, outp_fname = NULL){
-  R <- get_band_of_wavelength(df, 690)
-  B <- get_band_of_wavelength(df, 440)
-  outp <- R/B
-  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
-    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
-    cat('Spectral index written away as raster to: ',outp_fname, '\n')
-  }
-  return(outp)
-}
-
-#' @title Blue Green Index 2
-#' @description Calculate Blue Green Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
-#' @return A vector with the value of the index
-#' @references Zarco-Tejada 2005, http://www.indexdatabase.de/
-#' @export
-BGI2 <- function(df, outp_fname = NULL){
-  R450 <- get_band_of_wavelength(df, 450)
-  R550 <- get_band_of_wavelength(df, 550)
-  outp <- R450/R550
-  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
-    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
-    cat('Spectral index written away as raster to: ',outp_fname, '\n')
-  }
-  return( outp)
-}
-
-#' @title Blue Red Index 2
-#' @description Calculate Blue Red Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
-#' @return A vector with the value of the index
-#' @export
-BRI2 <- function(df, outp_fname = NULL){
-  R450 <- get_band_of_wavelength(df, 450)
-  R690 <- get_band_of_wavelength(df, 690)
-  outp <- R450/R690
-  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
-    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
-    cat('Spectral index written away as raster to: ',outp_fname, '\n')
-  }
-  return( outp)
-}
-
-
-#' @title Reflectance Band Ratio
-#' @description Calculate Reflectance Band Ratio
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
-#' @return A vector with the value of the index
-#' @references Datt et al. 1998
-#' @export
-datt_CabCx_c <- function(df, outp_fname = NULL){
-  R672 <- get_band_of_wavelength(df, 672)
-  R550 <- get_band_of_wavelength(df, 550)
-  R708 <- get_band_of_wavelength(df, 708)
-  outp <- R672 / (R550 * 3 * R708)
-  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
-    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
-    cat('Spectral index written away as raster to: ',outp_fname, '\n')
-  }
-  return( outp )
-}
-
-#' @title Reflectance Band Ratio Using NIR
-#' @description Calculate Reflectance Band Ratio Using NIR
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
-#' @return A vector with the value of the index
-#' @references Datt et al. 1998
-#' @export
-datt_NIRCabCx_c <- function(df, outp_fname = NULL){
-  R860 <- get_band_of_wavelength(df, 860)
-  R550 <- get_band_of_wavelength(df, 550)
-  R708 <- get_band_of_wavelength(df, 708)
-  outp <- R860 / (R550 * R708)
-  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
-    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
-    cat('Spectral index written away as raster to: ',outp_fname, '\n')
-  }
-  return( outp)
-}
-
 #' @title Normalized Difference Vegetation Index
 #' @description Calculate NDVI
 #' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
@@ -628,3 +537,611 @@ CTRI2 <- function(df, outp_fname = NULL){
   return(outp)
 }
 
+
+#' @title Reflectance Band Ratio
+#' @description Calculate Reflectance Band Ratio
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Datt et al. 1998
+#' @export
+datt_CabCx_c <- function(df, outp_fname = NULL){
+  R672 <- get_band_of_wavelength(df, 672)
+  R550 <- get_band_of_wavelength(df, 550)
+  R708 <- get_band_of_wavelength(df, 708)
+  outp <- R672 / (R550 * 3 * R708)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp )
+}
+
+#' @title Reflectance Band Ratio Using NIR
+#' @description Calculate Reflectance Band Ratio Using NIR
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references Datt et al. 1998
+#' @export
+datt_NIRCabCx_c <- function(df, outp_fname = NULL){
+  R860 <- get_band_of_wavelength(df, 860)
+  R550 <- get_band_of_wavelength(df, 550)
+  R708 <- get_band_of_wavelength(df, 708)
+  outp <- R860 / (R550 * R708)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Structure-Intensive Pigment Index
+#' @description Calculate Structure-Intensive Pigment Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+SIPI <- function(df, outp_fname = NULL){
+  R445 <- get_band_of_wavelength(df, 445)
+  R680 <- get_band_of_wavelength(df, 680)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- (R800 - R445) / (R800 + R680)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Carotenoid Reflectance Index 550 nm
+#' @description Calculate Carotenoid Reflectance Index 550 nm
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+CRI550 <- function(df, outp_fname = NULL){
+  R515 <- get_band_of_wavelength(df, 515)
+  R550 <- get_band_of_wavelength(df, 550)
+  outp <- (1 / R515) - (1 / R550)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Carotenoid Reflectance Index 700 nm
+#' @description Calculate Carotenoid Reflectance Index 700 nm
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+CRI700 <- function(df, outp_fname = NULL){
+  R515 <- get_band_of_wavelength(df, 515)
+  R700 <- get_band_of_wavelength(df, 700)
+  outp <- (1 / R515) - (1 / R550)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+
+#' @title Carotenoid Reflectance Index 550 nm with NIR
+#' @description Calculate Carotenoid Reflectance Index 550 nm with NIR
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+RNIR_CRI550 <- function(df, outp_fname = NULL){
+  R515 <- get_band_of_wavelength(df, 515)
+  R550 <- get_band_of_wavelength(df, 550)
+  R770 <- get_band_of_wavelength(df, 770)
+  outp <- (1 / R515) - (1 / R550) * R770
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Carotenoid Reflectance Index 700 nm with NIR
+#' @description Calculate Carotenoid Reflectance Index 700 nm with NIR
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+RNIR_CRI700 <- function(df, outp_fname = NULL){
+  R515 <- get_band_of_wavelength(df, 515)
+  R700 <- get_band_of_wavelength(df, 700)
+  R770 <- get_band_of_wavelength(df, 770)
+  outp <- (1 / R515) - (1 / R700) * R770
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Carotenoid Reflectance Index 700 nm with NIR
+#' @description Calculate Carotenoid Reflectance Index 700 nm with NIR
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+RNIR_CRI700 <- function(df, outp_fname = NULL){
+  R515 <- get_band_of_wavelength(df, 515)
+  R700 <- get_band_of_wavelength(df, 700)
+  R770 <- get_band_of_wavelength(df, 770)
+  outp <- (1 / R515) - (1 / R700) * R770
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Plant Senescing Reflectance Index
+#' @description Calculate Plant Senescing Reflectance Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PSRI <- function(df, outp_fname = NULL){
+  R500 <- get_band_of_wavelength(df, 500)
+  R680 <- get_band_of_wavelength(df, 680)
+  R750 <- get_band_of_wavelength(df, 750)
+  outp <- (R680 - R500) / R750
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return( outp)
+}
+
+#' @title Lichtenhaler Index
+#' @description Calculate Lichtenhaler index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+LIC3 <- function(df, outp_fname = NULL){
+  R440 <- get_band_of_wavelength(df, 440)
+  R740 <- get_band_of_wavelength(df, 740)
+  outp <- R440/R740
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Ratio Analysis Of Reflectance Spectra
+#' @description Calculate Ratio Analysis Of Reflectance Spectra
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+RARS <- function(df, outp_fname = NULL){
+  R513 <- get_band_of_wavelength(df, 513)
+  R746 <- get_band_of_wavelength(df, 746)
+  outp <- R513/R746
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Pigment Specific Simple Ratio Chlorophyll a
+#' @description Calculate Pigment Specific Simple Ratio Chlorophyll a
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PSSRa <- function(df, outp_fname = NULL){
+  R675 <- get_band_of_wavelength(df, 675)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- R675 / R800
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Pigment Specific Simple Ratio Chlorophyll b
+#' @description Calculate Pigment Specific Simple Ratio Chlorophyll b
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PSSRb <- function(df, outp_fname = NULL){
+  R650 <- get_band_of_wavelength(df, 650)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- R675 / R800
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Pigment Specific Simple Ratio Carotenoids
+#' @description Calculate Pigment Specific Simple Ratio Carotenoids
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PSSRc <- function(df, outp_fname = NULL){
+  R500 <- get_band_of_wavelength(df, 500)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- R675 / R800
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Pigment Specific Normalized Difference
+#' @description Calculate Pigment Specific Normalized Difference
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PSNDc <- function(df, outp_fname = NULL){
+  R470 <- get_band_of_wavelength(df, 470)
+  R800 <- get_band_of_wavelength(df, 800)
+  outp <- ( R800 - R470 ) / ( R800 + R470 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 570
+#' @description Calculate Photochemical Reflectance Index 570
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI570 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R570 <- get_band_of_wavelength(df, 570)
+  outp <- ( R570 - R531 ) / ( R570 + R531 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 515
+#' @description Calculate Photochemical Reflectance Index 515
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI515 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R570 <- get_band_of_wavelength(df, 570)
+  outp <- ( R515 - R531 ) / ( R515 + R531 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 512
+#' @description Calculate Photochemical Reflectance Index 512
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI512 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R512 <- get_band_of_wavelength(df, 512)
+  outp <- ( R512 - R531 ) / ( R512 + R531 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 600
+#' @description Calculate Photochemical Reflectance Index 600
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI600 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R600 <- get_band_of_wavelength(df, 600)
+  outp <- ( R600 - R531 ) / ( R600 + R531 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 670
+#' @description Calculate Photochemical Reflectance Index 670
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI670 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R670 <- get_band_of_wavelength(df, 670)
+  outp <- ( R670 - R531 ) / ( R670 + R531 )
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Photochemical Reflectance Index 670 570
+#' @description Calculate Photochemical Reflectance Index 670 570
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI670_570 <- function(df, outp_fname = NULL){
+  R531 <- get_band_of_wavelength(df, 531)
+  R570 <- get_band_of_wavelength(df, 570)
+  R670 <- get_band_of_wavelength(df, 670)
+  outp <- ( R570 - R531 - R670) / ( R570 + R531 + R670)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Normalized Photochemical Reflectance Index
+#' @description Calculate Normalized Photochemical Reflectance Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRIn <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R700 <- get_band_of_wavelength(df, 700)
+  outp <- ( CanHeMonR::PRI570(df)) / ( CanHeMonR::RDVI(df) * R700/R670)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Carotenoid/chlorophyll Ratio Index
+#' @description Calculate Carotenoid/chlorophyll Ratio Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+PRI_CI <- function(df, outp_fname = NULL){
+  R500 <- get_band_of_wavelength(df, 500)
+  R680 <- get_band_of_wavelength(df, 680)
+  R750 <- get_band_of_wavelength(df, 750)
+  outp <- (R680 - R500) / R750
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Reflectance Curvature Index
+#' @description Calculate Reflectance Curvature Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+CUR <- function(df, outp_fname = NULL){
+  R675 <- get_band_of_wavelength(df, 675)
+  R683 <- get_band_of_wavelength(df, 683)
+  R690 <- get_band_of_wavelength(df, 690)
+  outp <- (R675 - R690) / (R682 ^ 2)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Reflectance Curvature Index
+#' @description Calculate Reflectance Curvature Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+CUR <- function(df, outp_fname = NULL){
+  R675 <- get_band_of_wavelength(df, 675)
+  R683 <- get_band_of_wavelength(df, 683)
+  R690 <- get_band_of_wavelength(df, 690)
+  outp <- (R675 - R690) / (R683 ^ 2)
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Redness Index
+#' @description Calculate Redness Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+Redness <- function(df, outp_fname = NULL){
+  R670 <- get_band_of_wavelength(df, 670)
+  R700 <- get_band_of_wavelength(df, 700)
+  outp <- R700 / R670
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Greenness Index
+#' @description Calculate Greenness Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+Greenness <- function(df, outp_fname = NULL){
+  R570 <- get_band_of_wavelength(df, 570)
+  R670 <- get_band_of_wavelength(df, 670)
+  outp <- R570 / R670
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Blue Index
+#' @description Calculate Greenness Index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+Blue_index <- function(df, outp_fname = NULL){
+  R450 <- get_band_of_wavelength(df, 450)
+  R490 <- get_band_of_wavelength(df, 490)
+  outp <- R450 / R490
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Blue Green Index 1
+#' @description Calculate Blue Green Index 1
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+BGI1 <- function(df, outp_fname = NULL){
+  R400 <- get_band_of_wavelength(df, 400)
+  R550 <- get_band_of_wavelength(df, 550)
+  outp <- R400 / R550
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Blue Green Index 2
+#' @description Calculate Blue Green Index 2
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+BGI2 <- function(df, outp_fname = NULL){
+  R450 <- get_band_of_wavelength(df, 450)
+  R550 <- get_band_of_wavelength(df, 550)
+  outp <- R450 / R550
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Blue Red Index 1
+#' @description Calculate Blue Red Index 1
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+BRI1 <- function(df, outp_fname = NULL){
+  R400 <- get_band_of_wavelength(df, 400)
+  R690 <- get_band_of_wavelength(df, 690)
+  outp <- R400 / R690
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Blue Red Index 2
+#' @description Calculate Blue Red Index 2
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+BRI2 <- function(df, outp_fname = NULL){
+  R450 <- get_band_of_wavelength(df, 450)
+  R690 <- get_band_of_wavelength(df, 690)
+  outp <- R450 / R690
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+
+#' @title Lichtenhaler (Blue Over Red) Index 2
+#' @description Calculate Lichtenhaler red over blue index
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @return A vector with the value of the index
+#' @references x
+#' @export
+LIC2 <- function(df, outp_fname = NULL){
+  R <- get_band_of_wavelength(df, 690)
+  B <- get_band_of_wavelength(df, 440)
+  outp <- B/R
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}

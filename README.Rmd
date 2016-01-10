@@ -325,7 +325,7 @@ spectral_indices_for_crowns(crown_shp = crown_shp, r_fname = r_fname, index_name
 
 Implementations of spectral indices that can be called from **spectral_indices_for_crowns**.
 The same functions can be applied to data frames where columns represent spectral bands, or raster bricks,
-where layers do the same, as long as the columns/layers are named using the Quantalab convention *X700.000000.Nanometers*
+where layers do the same, as long as the columns/layers are named using the convention *X700.000000.Nanometers*
 
 ```{r, eval=FALSE}
 # Create and NDVI image from a multispectral image
