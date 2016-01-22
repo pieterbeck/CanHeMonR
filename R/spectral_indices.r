@@ -1,7 +1,8 @@
 #' @title Get Spectral Index or Chosen Wavelength From Brick
 #' @description Extract from a rasterband a particular wavelength, or spectral index
 #' @param br A multispectral raster brick. Layers should be named using the csic convention
-#' @param index_name_or_wavelength Character or numeric. The name of a spectral index or the spectral wavelength, in nanometers, to be extracted.
+#' @param index_name_or_wavelength Character or numeric. The name of a spectral index or the spectral wavelength,
+#' in nanometers, to be extracted.
 #' @return A raster layer
 #' @export
 get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
@@ -16,8 +17,10 @@ get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
 }
 
 #' @title Get The Measurements Made In A Chosen Wavelength
-#' @description Extract from a dataframe where columns are measurements in individual wavelengths, and named following Quantalab's convention, the data that are closest to a chosen wavelegth.
-#' @param spec_df Dataframe or RasterBrick of spectral measurements, with a column per band/spectral wavelength, and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.
+#' @description Extract from a dataframe where columns are measurements in individual wavelengths,
+#' and named following Quantalab's convention, the data that are closest to a chosen wavelegth.
+#' @param spec_df Dataframe or RasterBrick of spectral measurements, with a column per band/spectral wavelength,
+#' and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.
 #' @param wavelength_in_nm Integer The wavelength of interest, in nm.
 #' @return the column or rasterlayer with measurements in the chosen wavelength
 #' @export
@@ -45,8 +48,10 @@ get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
 
 #' @title Normalized Difference Vegetation Index
 #' @description Calculate NDVI
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns
+#' are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output
+#' filename to write the result to
 #' @return A vector with the value of the index
 #' @references Rouse et al. 1974
 #' @examples
@@ -69,8 +74,10 @@ NDVI <- function(df, outp_fname = NULL){
 
 #' @title Renormalized Difference Vegetation Index
 #' @description Calculate Renormalized Difference Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @param df A data frame where columns represent measurements in a single wavelength, and
+#' columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename
+#' to write the result to
 #' @return A vector with the value of the index
 #' @references Rouse et al. 1974
 #' @export
@@ -87,8 +94,10 @@ RDVI <- function(df, outp_fname = NULL){
 
 #' @title Simple Ratio
 #' @description Calculate the simple ratio vegetation index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
-#' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
+#' @param df A data frame where columns represent measurements in a single wavelength, and
+#' columns are named following Quantalab's conventions
+#' @param outp_fname In case the input is raster data, this is the optional output filename
+#' to write the result to
 #' @return A vector with the value of the index
 #' @references Jordat 1969
 #' @export
@@ -105,7 +114,8 @@ SR <- function(df, outp_fname = NULL){
 
 #' @title Modified Simple Ratio
 #' @description Calculate Modified Simple Ratio vegetation index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength, and columns
+#' are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Chen 1996
@@ -123,7 +133,8 @@ mod_SR <- function(df, outp_fname = NULL){
 
 #' @title Optimised Soil-Adjusted Vegetation INdex
 #' @description Calculate Renormalized Difference Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Rondeaux et al. 1996
@@ -141,7 +152,8 @@ OSAVI <- function(df, outp_fname = NULL){
 
 #' @title Modified Soil-Adjusted Vegetation Index
 #' @description Calculate Modified Soil-Adjusted Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Qi et al. 1994
@@ -159,7 +171,8 @@ MSAVI <- function(df, outp_fname = NULL){
 
 #' @title Triangular Vegetation Index
 #' @description Calculate Triangular Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Broge and Leblanc 2000
@@ -179,7 +192,8 @@ TVI <- function(df, outp_fname = NULL){
 
 #' @title Modified Triangular Vegetation Index 1
 #' @description Calculate Modified Triangular Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al 2004
@@ -199,7 +213,8 @@ MTVI1 <- function(df, outp_fname = NULL){
 
 #' @title Modified Triangular Vegetation Index 2
 #' @description Calculate Modified Triangular Vegetation Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al 2004
@@ -221,7 +236,8 @@ MTVI2 <- function(df, outp_fname = NULL){
 
 #' @title Modified Chlorophyll Absorption Ratio Index 1
 #' @description Calculate Modified Chlorophyll Absorption Ratio Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al 2004
@@ -241,7 +257,8 @@ MCARI1 <- function(df, outp_fname = NULL){
 
 #' @title Modified Chlorophyll Absorption Ratio Index 2
 #' @description Calculate Modified Chlorophyll Absorption Ratio Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al 2004
@@ -262,7 +279,8 @@ MCARI2 <- function(df, outp_fname = NULL){
 
 #' @title Enhanced Vegetation Index
 #' @description Calculate Enhanced Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Liu and Huete 1995
@@ -282,7 +300,8 @@ EVI <- function(df, outp_fname = NULL){
 
 #' @title Lichtenthaler Index 1
 #' @description Calculate Lichtenthaler Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Lichtenthaler et al 1996
@@ -300,7 +319,8 @@ LIC1 <- function(df, outp_fname = NULL){
 
 #' @title Vogelmann Index 1
 #' @description Calculate Vogelmann Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Vogelmann et al 1993
@@ -318,7 +338,8 @@ VOG1 <- function(df, outp_fname = NULL){
 
 #' @title Vogelmann Index 2
 #' @description Calculate Vogelmann Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Vogelmann et al 1993
@@ -338,7 +359,8 @@ VOG2 <- function(df, outp_fname = NULL){
 
 #' @title Vogelmann Index 3
 #' @description Calculate Vogelmann Index 3
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Vogelmann et al 1993
@@ -358,7 +380,8 @@ VOG3 <- function(df, outp_fname = NULL){
 
 #' @title Gitelson & Merzlyak Index 1
 #' @description CalculateGitelson & Merzlyak index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Gitelson & Merzlyak 1997
@@ -376,7 +399,8 @@ GM1 <- function(df, outp_fname = NULL){
 
 #' @title Gitelson & Merzlyak Index 2
 #' @description Calculate Gitelson & Merzlyak index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Gitelson & Merzlyak 1997
@@ -394,7 +418,8 @@ GM2 <- function(df, outp_fname = NULL){
 
 #' @title Transformed Chlorophyll Absorption in Reflectance Index
 #' @description Calculate Transformed Chlorophyll Absorption in Reflectance Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al. 2002
@@ -413,7 +438,8 @@ TCARI <- function(df, outp_fname = NULL){
 
 #' @title Transformed Chlorophyll Absorption in Reflectance Index Over Optimised Soil-Adjusted Vegetation Index
 #' @description Calculate Transformed Chlorophyll Absorption in Reflectance Index Over Optimised Soil-Adjusted Vegetation Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Haboudane et al. 2002
@@ -431,7 +457,8 @@ TCARI_over_OSAVI <- function(df, outp_fname = NULL){
 
 #' @title Chlorophyll Index Red Edge
 #' @description Calculate Chlorophyll Index Red EdgeChlorophyll Index Red Edge
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -449,7 +476,8 @@ CI <- function(df, outp_fname = NULL){
 
 #' @title Simple Ratio Pigment Index
 #' @description Calculate Simple Ratio Pigment Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -467,7 +495,8 @@ SRPI <- function(df, outp_fname = NULL){
 
 #' @title Normalized Phaeophytinization Index
 #' @description Calculate Normalized Phaeophytinization Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -485,7 +514,8 @@ NPQI <- function(df, outp_fname = NULL){
 
 #' @title Normalized Pigments Index
 #' @description Calculate Normalized Pigments Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -503,7 +533,8 @@ NPCI <- function(df, outp_fname = NULL){
 
 #' @title Carter Index 1
 #' @description Calculate Carter Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -521,7 +552,8 @@ CTRI1 <- function(df, outp_fname = NULL){
 
 #' @title Carter Index 2
 #' @description Calculate Carter Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -540,7 +572,8 @@ CTRI2 <- function(df, outp_fname = NULL){
 
 #' @title Reflectance Band Ratio
 #' @description Calculate Reflectance Band Ratio
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Datt et al. 1998
@@ -559,7 +592,8 @@ datt_CabCx_c <- function(df, outp_fname = NULL){
 
 #' @title Reflectance Band Ratio Using NIR
 #' @description Calculate Reflectance Band Ratio Using NIR
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references Datt et al. 1998
@@ -578,7 +612,8 @@ datt_NIRCabCx_c <- function(df, outp_fname = NULL){
 
 #' @title Structure-Intensive Pigment Index
 #' @description Calculate Structure-Intensive Pigment Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -597,7 +632,8 @@ SIPI <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid Reflectance Index 550 nm
 #' @description Calculate Carotenoid Reflectance Index 550 nm
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -615,7 +651,8 @@ CRI550 <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid Reflectance Index 700 nm
 #' @description Calculate Carotenoid Reflectance Index 700 nm
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -634,7 +671,8 @@ CRI700 <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid Reflectance Index 550 nm with NIR
 #' @description Calculate Carotenoid Reflectance Index 550 nm with NIR
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -653,7 +691,8 @@ RNIR_CRI550 <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid Reflectance Index 700 nm with NIR
 #' @description Calculate Carotenoid Reflectance Index 700 nm with NIR
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -672,7 +711,8 @@ RNIR_CRI700 <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid Reflectance Index 700 nm with NIR
 #' @description Calculate Carotenoid Reflectance Index 700 nm with NIR
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -691,7 +731,8 @@ RNIR_CRI700 <- function(df, outp_fname = NULL){
 
 #' @title Plant Senescing Reflectance Index
 #' @description Calculate Plant Senescing Reflectance Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -710,7 +751,8 @@ PSRI <- function(df, outp_fname = NULL){
 
 #' @title Lichtenhaler Index
 #' @description Calculate Lichtenhaler index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -728,7 +770,8 @@ LIC3 <- function(df, outp_fname = NULL){
 
 #' @title Ratio Analysis Of Reflectance Spectra
 #' @description Calculate Ratio Analysis Of Reflectance Spectra
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -746,7 +789,8 @@ RARS <- function(df, outp_fname = NULL){
 
 #' @title Pigment Specific Simple Ratio Chlorophyll a
 #' @description Calculate Pigment Specific Simple Ratio Chlorophyll a
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -764,7 +808,8 @@ PSSRa <- function(df, outp_fname = NULL){
 
 #' @title Pigment Specific Simple Ratio Chlorophyll b
 #' @description Calculate Pigment Specific Simple Ratio Chlorophyll b
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -782,7 +827,8 @@ PSSRb <- function(df, outp_fname = NULL){
 
 #' @title Pigment Specific Simple Ratio Carotenoids
 #' @description Calculate Pigment Specific Simple Ratio Carotenoids
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -800,7 +846,8 @@ PSSRc <- function(df, outp_fname = NULL){
 
 #' @title Pigment Specific Normalized Difference
 #' @description Calculate Pigment Specific Normalized Difference
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -818,7 +865,8 @@ PSNDc <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 570
 #' @description Calculate Photochemical Reflectance Index 570
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -836,7 +884,8 @@ PRI570 <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 515
 #' @description Calculate Photochemical Reflectance Index 515
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -854,7 +903,8 @@ PRI515 <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 512
 #' @description Calculate Photochemical Reflectance Index 512
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -872,7 +922,8 @@ PRI512 <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 600
 #' @description Calculate Photochemical Reflectance Index 600
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -890,7 +941,8 @@ PRI600 <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 670
 #' @description Calculate Photochemical Reflectance Index 670
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -908,7 +960,8 @@ PRI670 <- function(df, outp_fname = NULL){
 
 #' @title Photochemical Reflectance Index 670 570
 #' @description Calculate Photochemical Reflectance Index 670 570
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -928,7 +981,8 @@ PRI670_570 <- function(df, outp_fname = NULL){
 
 #' @title Normalized Photochemical Reflectance Index
 #' @description Calculate Normalized Photochemical Reflectance Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -946,7 +1000,8 @@ PRIn <- function(df, outp_fname = NULL){
 
 #' @title Carotenoid/chlorophyll Ratio Index
 #' @description Calculate Carotenoid/chlorophyll Ratio Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -965,7 +1020,8 @@ PRI_CI <- function(df, outp_fname = NULL){
 
 #' @title Reflectance Curvature Index
 #' @description Calculate Reflectance Curvature Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -984,7 +1040,8 @@ CUR <- function(df, outp_fname = NULL){
 
 #' @title Reflectance Curvature Index
 #' @description Calculate Reflectance Curvature Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1003,7 +1060,8 @@ CUR <- function(df, outp_fname = NULL){
 
 #' @title Redness Index
 #' @description Calculate Redness Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1021,7 +1079,8 @@ Redness <- function(df, outp_fname = NULL){
 
 #' @title Greenness Index
 #' @description Calculate Greenness Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1039,7 +1098,8 @@ Greenness <- function(df, outp_fname = NULL){
 
 #' @title Blue Index
 #' @description Calculate Greenness Index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1057,7 +1117,8 @@ Blue_index <- function(df, outp_fname = NULL){
 
 #' @title Blue Green Index 1
 #' @description Calculate Blue Green Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1075,7 +1136,8 @@ BGI1 <- function(df, outp_fname = NULL){
 
 #' @title Blue Green Index 2
 #' @description Calculate Blue Green Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1093,7 +1155,8 @@ BGI2 <- function(df, outp_fname = NULL){
 
 #' @title Blue Red Index 1
 #' @description Calculate Blue Red Index 1
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1111,7 +1174,8 @@ BRI1 <- function(df, outp_fname = NULL){
 
 #' @title Blue Red Index 2
 #' @description Calculate Blue Red Index 2
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x
@@ -1130,7 +1194,8 @@ BRI2 <- function(df, outp_fname = NULL){
 
 #' @title Lichtenhaler (Blue Over Red) Index 2
 #' @description Calculate Lichtenhaler red over blue index
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions
+#' @param df A data frame where columns represent measurements in a single wavelength,
+#' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @return A vector with the value of the index
 #' @references x

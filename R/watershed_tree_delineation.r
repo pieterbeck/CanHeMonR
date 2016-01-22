@@ -1,6 +1,8 @@
 #' @title Watershed-Based Tree Detection
 #' @description Detect potential crown using watershed based segmentation of an NDVI image
 #' @param image_fname Filename of the image to run the tree detection on
+#' @param bandnames Character. In case the bands aren't named according to wavelength and following csic convention, they
+#' can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
 #' @param extent Raster extent object. Default is NA, which means the entire image will be analyzed.
 #' @param index_name Character (for a spectral index) or numeric (for an individual wavelength).
 #' The spectral index or wavelength on which to perform the watershed segmentation. If a wavelength is provided, it should be expressed in nm.
@@ -8,11 +10,11 @@
 #' @param bg_mask List. Uneven positions should provide index names or wavelength numbers. Even positions in the list
 #' should provide the cut-off value of the spectral index, below which, pixels are considered background.
 #' Default is list('NDVI',0,1).
-#' @param neighbour_radius Numeric. In meters the radius to be considered for the detection of neigbouring objects in m.
+#' @param neighbour_radius Numeric. The radius to be considered for the detection of neigbouring objects in m.
 #' Higher values causes greater smoothing in the detection of objects, and then trees. Default is 2 m.
 #' @param watershed_tolerance . The tolerance setting in the EBImage::watershed operation. Lower values cause greater separation.
 #' Defualt is 0.08, designed for NDVI.
-#' @param plott Logical. Do you want to plot results? Default is False.
+#' @param plott Logical. Do you want to plot results? Default is False. T does not work yet!
 #' @param max_npix Integer. If set, image_name will be tiled to have fewer than max_npix pixels and processed
 #' in tiles. Tiling, and setting max_npix needs to be set if parallel = T. Default is Inf.
 #' @param parallel Logical. Would you like the tiles to be processed in parallel?  Default is False.
@@ -24,6 +26,7 @@
 #' @note the raster::rasterToPolygons step is slow - look for ways to speed it up!
 #' @return A SpatialPolygons object of suspected trees crowns.
 #' @seealso polygons_to_seeds
+#' @note  Tiled processing does not appear to work for unprocessed data?
 #' @examples
 #' \dontrun{
 #' watershed_tree_delineation(
@@ -39,7 +42,8 @@
 #' }
 #' @export
 watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", bg_mask, neighbour_radius = 2, watershed_tolerance = .008,
-                                     rough_crowns_shp_fname = '', plott = F, max_npix = Inf, parallel = F, nWorkers = 2){
+                                     rough_crowns_shp_fname = '', plott = F, max_npix = Inf, parallel = F, nWorkers = 2,
+                                     bandnames = NULL){
 
   # Installing the EBImage package
   # source("http://bioconductor.org/biocLite.R")
@@ -52,9 +56,17 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
     input_image <- raster::crop(input_image, extent)
   }
 
+  if (!is.null(bandnames)){
+    if (raster::nlayers(input_image) != length(bandnames)){
+      cat('You should provide as many bandnames as the image has layers\n!')
+      browser()
+    }else{
+      names(input_image) <- bandnames
+    }
+  }
   # calculate the requested spectral index, or extract the requested wavelength
   index_image <- CanHeMonR::get_index_or_wavelength_from_brick(br = input_image, index_name_or_wavelength = index_name)
-  if (plott){raster::plot(index_image, axes = F)}
+  if (plott){rasterVis::levelplot(index_image, margin=F)}
 
   # filter out background areas, working through the list that is bg_mask
   for (i in seq(1,length(bg_mask),by=2)){
@@ -129,9 +141,13 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
   }
 
   tile_borders <- rgeos::gDifference(tile_borders,as(raster::extent(index_image),"SpatialLines"))
-  raster::projection(tile_borders) <- raster::projection(crown_pols)
+  if (!is.na(raster::projection((crown_pols)))){
+    raster::projection(tile_borders) <- raster::projection(crown_pols)
+  }
   #debug(merge_pols_intersected_by_lines)
-  crown_pols2 <- merge_pols_intersected_by_lines(spat_pols = crown_pols, spat_lines = tile_borders)
+  if (length(tile_extents) > 1){
+    crown_pols <- merge_pols_intersected_by_lines(spat_pols = crown_pols, spat_lines = tile_borders)
+  }
     #this returns only the line segments that represent crown splits.
 
 
@@ -142,13 +158,12 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
 
   # somehow the pixels with NDVI set to -1 still make it into the polygons
   #pol <- pol[unlist(lapply(raster::extract(x = index_image, y = pol),function(x){mean(x, na.rm = T)} > 0)), ]
-  if (plott){raster::plot(index_image, axes = F)}
 
 
   #save the polygons
   if (rough_crowns_shp_fname != ''){
-    raster::shapefile(crown_pols2, filename = rough_crowns_shp_fname, overwrite = T)
+    raster::shapefile(crown_pols, filename = rough_crowns_shp_fname, overwrite = T)
   }
 
-  return(crown_pols2)
+  return(crown_pols)
 }
