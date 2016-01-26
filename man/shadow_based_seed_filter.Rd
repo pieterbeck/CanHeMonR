@@ -5,16 +5,12 @@
 \title{Filter Seeds That Lack Shadows}
 \usage{
 shadow_based_seed_filter(seed_shp_fname, image_fname, shadow_mask, x_shift,
-  y_shift, shadow_diameter = 6)
+  y_shift, shadow_diameter = 6, bandnames = NULL, outp_seed_shp_fname)
 }
 \arguments{
 \item{seed_shp_fname}{Character. Filename for the input point shapefile.}
 
 \item{image_fname}{Filename of the image to run the tree detection on}
-
-\item{shadow_mask}{List. Uneven positions should provide index names or wavelength numbers. Even positions in the list
-should provide the cut-off value of the spectral index, below which, pixels are considered shadow.
-Default is list('NDVI',0,1).}
 
 \item{x_shift}{Numeric. Horizontal shift from crown to shadow in x_direction.}
 
@@ -22,7 +18,12 @@ Default is list('NDVI',0,1).}
 
 \item{shadow_diameter}{Numeric. Maximum diameter of a crown. Default is 6 m.}
 
-\item{outp_seed_shp_fname}{Character. Filename for the output point shapefile.}
+\item{bandnames}{Character. In case the bands aren't named according to wavelength and following csic convention, they
+can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
+should provide the cut-off value of the spectral index, below which, pixels are considered shadow.
+Default is list('NDVI',0,1).}
+
+\item{outp_seed_shp_fname}{Character. Filename for the output point shapefile. Default is NA, which means output is not written away.}
 }
 \value{
 A SpatialPoints object

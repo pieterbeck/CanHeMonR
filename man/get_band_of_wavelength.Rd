@@ -7,7 +7,8 @@
 get_band_of_wavelength(spec_df, wavelength_in_nm)
 }
 \arguments{
-\item{spec_df}{Dataframe or RasterBrick of spectral measurements, with a column per band/spectral wavelength, and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.}
+\item{spec_df}{Dataframe or RasterBrick of spectral measurements, with a column per band/spectral wavelength,
+and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.}
 
 \item{wavelength_in_nm}{Integer The wavelength of interest, in nm.}
 }
@@ -15,6 +16,7 @@ get_band_of_wavelength(spec_df, wavelength_in_nm)
 the column or rasterlayer with measurements in the chosen wavelength
 }
 \description{
-Extract from a dataframe where columns are measurements in individual wavelengths, and named following Quantalab's convention, the data that are closest to a chosen wavelegth.
+Extract from a dataframe where columns are measurements in individual wavelengths,
+and named following Quantalab's convention, the data that are closest to a chosen wavelegth.
 }
 

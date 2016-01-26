@@ -9,7 +9,8 @@ get_index_or_wavelength_from_brick(br, index_name_or_wavelength)
 \arguments{
 \item{br}{A multispectral raster brick. Layers should be named using the csic convention}
 
-\item{index_name_or_wavelength}{Character or numeric. The name of a spectral index or the spectral wavelength, in nanometers, to be extracted.}
+\item{index_name_or_wavelength}{Character or numeric. The name of a spectral index or the spectral wavelength,
+in nanometers, to be extracted.}
 }
 \value{
 A raster layer

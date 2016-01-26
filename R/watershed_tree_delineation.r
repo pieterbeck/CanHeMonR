@@ -159,6 +159,8 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
   # somehow the pixels with NDVI set to -1 still make it into the polygons
   #pol <- pol[unlist(lapply(raster::extract(x = index_image, y = pol),function(x){mean(x, na.rm = T)} > 0)), ]
 
+  #disaggregate crowns that ended up of muliple sub-polygons, but preserve holes
+  crown_pols <- sp::disaggregate(crown_pols)
 
   #save the polygons
   if (rough_crowns_shp_fname != ''){

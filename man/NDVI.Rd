@@ -7,9 +7,11 @@
 NDVI(df, outp_fname = NULL)
 }
 \arguments{
-\item{df}{A data frame where columns represent measurements in a single wavelength, and columns are named following Quantalab's conventions}
+\item{df}{A data frame where columns represent measurements in a single wavelength, and columns
+are named following Quantalab's conventions}
 
-\item{outp_fname}{In case the input is raster data, this is the optional output filename to write the result to}
+\item{outp_fname}{In case the input is raster data, this is the optional output
+filename to write the result to}
 }
 \value{
 A vector with the value of the index

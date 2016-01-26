@@ -12,12 +12,14 @@
 #' @param outp_shp_fname Character. Filename for the output point shapefile.
 #' @param append Logical. Should the data in outp_shp_fname be appendend with the new results? Default is False.
 #' @param parallel Logical. Would you like the tiles to be processed in parallel?  Default is False.
-#' @param nWorkers If running the ocde in parallel, how many workers should be used? Default is 2.
+#' @param nWorkers If running the code in parallel, how many workers should be used? Default is 2.
+#' @param bandnames Character. In case the bands aren't named according to wavelength and following csic convention, they
+#' can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
 #' @return A SpatialPoints object
 #' @seealso watershed_tree_delineation
 #' @export
 polygons_to_seeds <- function(rough_crowns_shp_fname, seed_placement = 'centroid',image_fname, index_name = 'NDVI', parallel = F, nWorkers = 2,
-                              outp_shp_fname, append = F){
+                              outp_shp_fname, append = F,bandnames = NULL){
 
   crown_pols2 <- raster::shapefile(rough_crowns_shp_fname)
 
@@ -40,6 +42,15 @@ polygons_to_seeds <- function(rough_crowns_shp_fname, seed_placement = 'centroid
   if (seed_placement == 'maxval'){
     # read in the image, and crop if requested
     input_image <- raster::brick(image_fname)
+    if (!is.null(bandnames)){
+      if (raster::nlayers(input_image) != length(bandnames)){
+        cat('You should provide as many bandnames as the image has layers\n!')
+        browser()
+      }else{
+        names(input_image) <- bandnames
+      }
+    }
+
     crop_ext <- raster::extent(sp::bbox(crown_pols2))
     input_image <- raster::crop(input_image, crop_ext)
 
@@ -66,7 +77,7 @@ polygons_to_seeds <- function(rough_crowns_shp_fname, seed_placement = 'centroid
     existing_output <- raster::shapefile(outp_shp_fname)
     seeds <- maptools::spRbind(existing_output, seeds)
   }
-  raster::plot(seeds, col = 'black', pch = 1, add = T, cex = .5)
+  #raster::plot(seeds, col = 'black', pch = 1, add = T, cex = .5)
 
   if (outp_shp_fname != ''){
     raster::shapefile(seeds, filename = outp_shp_fname, overwrite = T)

@@ -57,13 +57,6 @@ require(CanHeMonR)
 * A point shapefile denoting (suspected) tree crowns
 * The seed can either be put at the polygon's centroid, or at the pixel of highest NDVI
 
-#### To Do
-
-* write a shadow-seaker function, given a maximum tree height, sun azimuth
-if there is no pixel with low PAN value in the projected shadow, your seed might not be a tree top (unless there is another
-seed in the projected crown)
-
-* if Ganguly's the tree non-tree mask is good, than the shadow-seaker might not be neScessary...
 
 ```{r, eval=FALSE}
 
@@ -79,12 +72,16 @@ polygons_to_seeds(
    )
 ```
 
+## Filtering suspected crown that are too small to be a tree - remove_small_pols.r
+
 ## Filtering crown seeds that don't have a tree-like shadow - shadow_based_seed_filter.r
+
+* if Ganguly's the tree non-tree mask is good, than the shadow-seaker might not be necessary...
 
 ```{r, eval=FALSE}
 shadow_based_seed_filter(
   seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp',
-  image_fname = image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
+  image_fname 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
   shadow_mask = list(800, 801),
   x_shift = -4,
   y_shift = 4,

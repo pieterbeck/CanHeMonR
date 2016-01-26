@@ -7,7 +7,7 @@
 watershed_tree_detection(image_fname, extent, index_name = "NDVI", bg_mask,
   neighbour_radius = 2, watershed_tolerance = 0.008,
   rough_crowns_shp_fname = "", plott = F, max_npix = Inf, parallel = F,
-  nWorkers = 2)
+  nWorkers = 2, bandnames = NULL)
 }
 \arguments{
 \item{image_fname}{Filename of the image to run the tree detection on}
@@ -22,7 +22,7 @@ Default is "NDVI".}
 should provide the cut-off value of the spectral index, below which, pixels are considered background.
 Default is list('NDVI',0,1).}
 
-\item{neighbour_radius}{Numeric. In meters the radius to be considered for the detection of neigbouring objects in m.
+\item{neighbour_radius}{Numeric. The radius to be considered for the detection of neigbouring objects in m.
 Higher values causes greater smoothing in the detection of objects, and then trees. Default is 2 m.}
 
 \item{watershed_tolerance}{. The tolerance setting in the EBImage::watershed operation. Lower values cause greater separation.
@@ -30,7 +30,7 @@ Defualt is 0.08, designed for NDVI.}
 
 \item{rough_crowns_shp_fname}{Character. Filename for the output polygon shapefile. The default is to not write the output away.}
 
-\item{plott}{Logical. Do you want to plot results? Default is False.}
+\item{plott}{Logical. Do you want to plot results? Default is False. T does not work yet!}
 
 \item{max_npix}{Integer. If set, image_name will be tiled to have fewer than max_npix pixels and processed
 in tiles. Tiling, and setting max_npix needs to be set if parallel = T. Default is Inf.}
@@ -38,6 +38,9 @@ in tiles. Tiling, and setting max_npix needs to be set if parallel = T. Default 
 \item{parallel}{Logical. Would you like the tiles to be processed in parallel?  Default is False.}
 
 \item{nWorkers}{If running the code in parallel, how many workers should be used? Default is 4.}
+
+\item{bandnames}{Character. In case the bands aren't named according to wavelength and following csic convention, they
+can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.}
 }
 \value{
 A SpatialPolygons object of suspected trees crowns.
@@ -47,6 +50,8 @@ Detect potential crown using watershed based segmentation of an NDVI image
 }
 \note{
 the raster::rasterToPolygons step is slow - look for ways to speed it up!
+
+Tiled processing does not appear to work for unprocessed data?
 }
 \examples{
 \dontrun{

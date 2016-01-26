@@ -6,7 +6,7 @@
 \usage{
 polygons_to_seeds(rough_crowns_shp_fname, seed_placement = "centroid",
   image_fname, index_name = "NDVI", parallel = F, nWorkers = 2,
-  outp_shp_fname, append = F)
+  outp_shp_fname, append = F, bandnames = NULL)
 }
 \arguments{
 \item{rough_crowns_shp_fname}{Character. Filename for the of the input polygon shapefile roughly depicting crowns.}
@@ -24,11 +24,14 @@ Default is "NDVI".}
 
 \item{parallel}{Logical. Would you like the tiles to be processed in parallel?  Default is False.}
 
-\item{nWorkers}{If running the ocde in parallel, how many workers should be used? Default is 2.}
+\item{nWorkers}{If running the code in parallel, how many workers should be used? Default is 2.}
 
 \item{outp_shp_fname}{Character. Filename for the output point shapefile.}
 
 \item{append}{Logical. Should the data in outp_shp_fname be appendend with the new results? Default is False.}
+
+\item{bandnames}{Character. In case the bands aren't named according to wavelength and following csic convention, they
+can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.}
 }
 \value{
 A SpatialPoints object
