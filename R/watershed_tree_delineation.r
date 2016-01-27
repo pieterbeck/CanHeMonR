@@ -96,6 +96,13 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
   #choose the appropriate operator for the foreach loop
   require(doParallel) #doesn't appear to work without
   `%op%` <- if (parallel) `%dopar%` else `%do%`
+
+  if ((!parallel)&(length(tile_extents) > 1)){
+    # Create a progress bar.
+    # source http://stackoverflow.com/questions/5423760/how-do-you-create-a-progress-bar-when-using-the-foreach-function-in-r
+    pb <- utils::txtProgressBar(min = 1, max = length(tile_extents), style=3)
+  }
+
   crown_pols <- foreach::foreach(i = 1:length(tile_extents), .combine = maptools::spRbind,  .multicombine = F, .errorhandling='remove') %op% {
     require(rgeos)
     index_image_tile <- raster::crop(x = index_image, y = tile_extents[[i]])
@@ -111,42 +118,58 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
       # put the output in a template image
       wshed <- raster::setValues(wshed, w)
 
+      # calculate the necessary number of decimals for the coordinates of polygons
+      # set it equal to the number of decimals in the image resolution
+      necessary_decimals <- raster::res(wshed)
+      necessary_decimals <- nchar(necessary_decimals - round(necessary_decimals))-2
+      necessary_decimals <- max(necessary_decimals)
+      # convert the objects to polygons
       # this ONLY works in parallel if the dissolve/aggregate step is executed seperately
       # and the by parameter  in raster::aggregate is set explicitly rather than by attribute name
-      pol <- raster::rasterToPolygons(wshed, dissolve = F, digits = 1, na.rm = T, function(x){x >= 1})
+      pol <- raster::rasterToPolygons(wshed, dissolve = F, digits = necessary_decimals, na.rm = T, function(x){x >= 1})
+
       #browser()
       nn <- names(pol)
       require(sp) #code breaks if you remove this ! - unless you import(sp) in the namespace?
       pol <- raster::aggregate(pol, by = nn)
 
       pol <- sp::spChFIDs(pol, as.character(paste0(i,'_',1:length(pol))))
+
+      #update the progress bar
+      if ((!parallel)&(length(tile_extents) > 1)){
+        utils::setTxtProgressBar(pb, i)
+      }
     }else{
       deliberate_error
     }
+
+
+
     pol
     #wshed
   }
-
+  # Close the progress bar.
+  if ((!parallel)&(length(tile_extents) > 1)){close(pb)}
 
  if (plott){raster::plot(crown_pols, col = NULL, add = T, border = 'red',lwd = 1)}
 
   #merge the crowns that got split because of the tiling
   #Where the tile edges intersect crowns, you end up with split crowns.
   #First, make a spatial lines object of the tile borders.
-  tile_borders <- lapply(tile_extents, function(x){as(x, 'SpatialPolygons')})
-  tile_borders <-foreach::foreach(i = 1:length(tile_extents), .combine = maptools::spRbind,.multicombine = F, .errorhandling='stop' ) %do% {
+  if (length(tile_extents) > 1){
+    tile_borders <- lapply(tile_extents, function(x){as(x, 'SpatialPolygons')})
+    tile_borders <-foreach::foreach(i = 1:length(tile_extents), .combine = maptools::spRbind,.multicombine = F, .errorhandling='stop' ) %do% {
     x <- as(tile_extents[[i]],"SpatialLines")
     x <- sp::spChFIDs(x, as.character(i))
     x
-  }
+    }
 
-  tile_borders <- rgeos::gDifference(tile_borders,as(raster::extent(index_image),"SpatialLines"))
-  if (!is.na(raster::projection((crown_pols)))){
-    raster::projection(tile_borders) <- raster::projection(crown_pols)
-  }
-  #debug(merge_pols_intersected_by_lines)
-  if (length(tile_extents) > 1){
-    crown_pols <- merge_pols_intersected_by_lines(spat_pols = crown_pols, spat_lines = tile_borders)
+    tile_borders <- rgeos::gDifference(tile_borders,as(raster::extent(index_image),"SpatialLines"))
+    if (!is.na(raster::projection((crown_pols)))){
+      raster::projection(tile_borders) <- raster::projection(crown_pols)
+    }
+    #debug(merge_pols_intersected_by_lines)
+    crown_pols <- CanHeMonR::merge_pols_intersected_by_lines(spat_pols = crown_pols, spat_lines = tile_borders, original_res = raster::res(index_image)[1])
   }
     #this returns only the line segments that represent crown splits.
 

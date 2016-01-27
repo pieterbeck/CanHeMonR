@@ -53,29 +53,38 @@ tile_raster_extent <- function(r, max_pixs){
 #' @seealso tile_raster_extent
 #' @export
 merge_pols_intersected_by_lines <- function(spat_pols, spat_lines, original_res = 0.15){
+  buffer_value <- 0.02
   #Intersect it with the polygons, buffering the latter slightly to ensure it intersects the line when touching
   #crown_pols_buff <- raster::buffer(SpatPols,.05,dissolve=F)
-  crown_pols_buff <- rgeos::gBuffer(spat_pols, width = original_res + 0.01, byid = T)
+  crown_pols_buff <- rgeos::gBuffer(spat_pols, width = original_res + buffer_value, byid = T)
+  #crown_pols_buff <- rgeos::gBuffer(spat_pols, width = buffer_value, byid = T)
   crowns_on_border <- raster::intersect(crown_pols_buff, spat_lines)
 
-#   plot(spat_pols,axes=T)
-#   plot(spat_lines, add=T, col=3)
-#   plot(crowns_on_border,col=2,add=T)
+  #   plot(spat_pols,axes=T)
+  #   plot(spat_lines, add=T, col=3)
+  #   plot(crowns_on_border,col=2,add=T)
 
   #merge the polygons that share a border
   crowns_on_border <- rgeos::gUnionCascaded(crowns_on_border)
   #  plot(crowns_on_border, col=3, add=T)
-  tt <- rgeos::gDifference(crown_pols_buff, crowns_on_border)
-  #raster::buffer cannot buffer inward
-  crowns_on_border <- rgeos::gBuffer(crowns_on_border, width = -.05)
-  #plot(tt)
+
+  #remove the border crowns from the buffered crowns
+  non_border_crowns <- rgeos::gDifference(crown_pols_buff, crowns_on_border, byid =T) #SLOW !
+  # you get topology errors if you keep byid=F (from experience and see https://stat.ethz.ch/pipermail/r-sig-geo/2014-October/021956.html)
+
+  #undo the buffering for the border crowns - This is turned off for the time being, until it can be done for the non_border_crowns too (holes cause issues)
+  #crowns_on_border <- rgeos::gBuffer(crowns_on_border, width = 0 - original_res - buffer_value)
+  #raster::buffer cannot buffer inward, so use rgeos::gBuffer
+
   #the rgeos operations, made the objects of length 1, so disaggregate them
-  tt <- sp::disaggregate(tt)
+  non_border_crowns <- sp::disaggregate(non_border_crowns)
   crowns_on_border <- sp::disaggregate(crowns_on_border)
 
+  #assign IDs to the crowns on the tile borders (now merged across borders), and to the non-border crowns
   crowns_on_border <- sp::spChFIDs(crowns_on_border,as.character(1:length(crowns_on_border)))
-  tt <- sp::spChFIDs(tt, as.character((length(crowns_on_border)+1) :(length(crowns_on_border) + length(tt))))
-  crown_pols <- maptools::spRbind(crowns_on_border, tt)
+  non_border_crowns <- sp::spChFIDs(non_border_crowns, as.character((length(crowns_on_border)+1) :(length(crowns_on_border) + length(non_border_crowns))))
+  #merge the two
+  crown_pols <- maptools::spRbind(crowns_on_border, non_border_crowns)
   return(crown_pols)
 }
 
@@ -220,7 +229,7 @@ identify_n_neighbours <- function(Spat.polygons,n,append=F,col.prefix='IDneighb_
   #add a column with unique ID, add them to SpatPolygons
   Spat.polygons@data <- cbind(Spat.polygons@data, ID = 1:length(Spat.polygons))
   # identify the center of mass of each polygon
-    #http://gis.stackexchange.com/questions/43543/how-to-calculate-polygon-centroids-in-r-for-non-contiguous-shapes
+  #http://gis.stackexchange.com/questions/43543/how-to-calculate-polygon-centroids-in-r-for-non-contiguous-shapes
   trueCentroids <- rgeos::gCentroid(Spat.polygons,byid=TRUE)
   #plot(Spat.polygons)
   #points(trueCentroids,pch=2)
@@ -294,8 +303,8 @@ subtract_control_median <- function(df){
 #' @export
 remove_all_NA <- function(df){
   df.return <- NULL
-    if (any(!is.na(df))){
-      df.return <- df
-    }
+  if (any(!is.na(df))){
+    df.return <- df
+  }
   return(df.return)
 }
