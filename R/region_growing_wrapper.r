@@ -15,7 +15,7 @@
 #' @param seed_nrs Seeds to be used for crown estimation. Starts counting at 1, for FID = 0. If set to NA, all seeds will be included. Default is NA.
 #' @param outp_crown_shp_filename Base for the output polygon shape filename. **_probcut.shp** will be added to create the final filename.
 #' @param process_dir An optional directory to write output to while processing. Can come in handy if network access is a bottleneck
-#' or i/o to the network causes crashes.
+#' or i/o to the network causes crashes. Default is NULL in which case output is written to the final destination directory.
 #' @param avoid_recalculation Do you want to check if a run with these settings and same output filename was already done, and add outlines of new seeds to that output? Default is T.
 #' @param plott Logical. Do you want to plot the results? Defaults to F.
 #' @param RGBseq 3-element vectors given the band nummers for RGB plotting of crowns. Only considered is plott=T. Default is c(1,2,3).
@@ -153,12 +153,11 @@ grow_crowns <- function(r_file,
 
       #the output of sp::over is the same length has the first argument in its call
                               #this is not bomb proof
-
                               #alternative solution is  analyzed_seeds_index <- as.numeric(rownames(analyzed_seeds_index)[!is.na(analyzed_seeds_index)])
 
       analyzed_seeds_index <- which(!is.na(analyzed_seeds_index))
-
       cat(length(analyzed_seeds_index),' of the ',length(seeds), ' provided seeds already have crowns in the existing output\n')
+
       if (length(analyzed_seeds_index) > 0 ){
         #the indices rerturned by sp::over start at 0
         #analyzed_seeds_index <- analyzed_seeds_index + 1
@@ -167,10 +166,16 @@ grow_crowns <- function(r_file,
 
         seeds <- seeds[-analyzed_seeds_index, ]
         cat('Only considering the remaining ',length(seeds),' seeds for crown estimation\n')
-
       }
-      }else{
-      (cat('Any output in it, will be overwritten'))
+    }else{
+      # you're recalculating any existing output
+      cat('Any output in it, will be overwritten')
+    }
+  }else{
+    #there is no existing output yet
+    cat('Output file ',outp_crown_shp_filename,'\n does NOT exist yet \n')
+    if (is.null(process_dir)){
+      temp_outp_crown_shp_filename <- outp_crown_shp_filename
     }
   }
   cat("------------------------------------------\n")
