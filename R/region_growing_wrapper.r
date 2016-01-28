@@ -131,7 +131,7 @@ grow_crowns <- function(r_file,
       #copy the existing output file to the processing directory
       if (!is.null(process_dir)){
         cat('You requested that during processing, data be written to ', process_dir,'\n')
-        file.copy(from = outp_crown_shp_filename, to = temp_outp_crown_shp_filename, overwrite = T)
+        shp_copy(from = outp_crown_shp_filename, to = temp_outp_crown_shp_filename, overwrite = T)
         cat('Copying ',basename(outp_crown_shp_filename),' there.\n')
       }else{
         temp_outp_crown_shp_filename <- outp_crown_shp_filename
@@ -444,7 +444,7 @@ grow_crowns <- function(r_file,
   #############################################
   #if the output was temporarily written to a processing drive, copy it to its final destination
   if (!is.null(process_dir)){
-    copy_success <- file.copy(from = temp_outp_crown_shp_filename, to = outp_crown_shp_filename, overwrite = T)
+    copy_success <- shp_copy(from = temp_outp_crown_shp_filename, to = outp_crown_shp_filename, overwrite = T)
     cat('Could output file be copied from processing drive to output destination?\n')
     cat(copy_success,'\n')
 
