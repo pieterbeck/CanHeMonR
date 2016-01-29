@@ -4,7 +4,7 @@
 #' @param image_fname Filename of the image to run the tree detection on
 #' @param bandnames Character. In case the bands aren't named according to wavelength and following csic convention, they
 #' can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
-#  @param shadow_mask List. Uneven positions should provide index names or wavelength numbers. Even positions in the list
+#' @param shadow_mask List. Uneven positions should provide index names or wavelength numbers. Even positions in the list
 #' should provide the cut-off value of the spectral index, below which, pixels are considered shadow.
 #' Default is list('NDVI',0,1).
 #' @param x_shift Numeric. Horizontal shift from crown to shadow in x_direction.

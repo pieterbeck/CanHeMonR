@@ -105,7 +105,7 @@ grow_crowns <- function(r_file,
 
   seeds_to_run <- seed_nrs
   if (is.na(seeds_to_run[1])){
-    cat('In principle estimating crowns for all of the seeds in the .shp\n')
+    cat(paste0('In principle estimating crowns for all of the ', length(seeds), ' seeds in the .shp\n'))
   }else{
     #only keep requested seed nrs, for which seeds exist
     seeds_to_run <- intersect(seeds_to_run, 1:length(seeds))
@@ -129,15 +129,11 @@ grow_crowns <- function(r_file,
     cat('Output file ',outp_crown_shp_filename,'\n already exists \n')
     if (avoid_recalculation){
       #copy the existing output file to the processing directory
-<<<<<<< HEAD
-      if (is.null(process_dir)){
-=======
       if (!is.null(process_dir)){
         cat('You requested that during processing, data be written to ', process_dir,'\n')
         shp_copy(from = outp_crown_shp_filename, to = temp_outp_crown_shp_filename, overwrite = T)
         cat('Copying ',basename(outp_crown_shp_filename),' there.\n')
       }else{
->>>>>>> 511b6afca25d38f648879d39999b5ae3f3cdd033
         temp_outp_crown_shp_filename <- outp_crown_shp_filename
       }
 
