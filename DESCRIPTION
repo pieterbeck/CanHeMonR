@@ -11,7 +11,6 @@ Imports:
     raster,
     doParallel,
     foreach,
-    parallel,
     iterators,
     maptools,
     mvnfast,

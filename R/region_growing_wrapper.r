@@ -68,7 +68,7 @@ grow_crowns <- function(r_file,
   #with the chosen settings, how many pixels can a crown be wide?
   cat("------------------------------------------\n")
   cat('MAXIMUM crown diameter:\n')
-  r_win_dim <- check_im_res(r,max_crown_RADIUS_in_m)
+  r_win_dim <- CanHeMonR::check_im_res(r,max_crown_RADIUS_in_m)
   cat("------------------------------------------\n")
   cat('MINIMUM crown diameter:\n')
   min_crown_box <- CanHeMonR::check_im_res(r,min_crown_RADIUS_in_m)
@@ -129,11 +129,7 @@ grow_crowns <- function(r_file,
     cat('Output file ',outp_crown_shp_filename,'\n already exists \n')
     if (avoid_recalculation){
       #copy the existing output file to the processing directory
-      if (!is.null(process_dir)){
-        cat('You requested that during processing, data be written to ', process_dir,'\n')
-        file.copy(from = outp_crown_shp_filename, to = temp_outp_crown_shp_filename, overwrite = T)
-        cat('Copying ',basename(outp_crown_shp_filename),' there.\n')
-      }else{
+      if (is.null(process_dir)){
         temp_outp_crown_shp_filename <- outp_crown_shp_filename
       }
 
@@ -170,6 +166,14 @@ grow_crowns <- function(r_file,
     }else{
       # you're recalculating any existing output
       cat('Any output in it, will be overwritten')
+      if (!is.null(process_dir)){
+        cat('You requested that during processing, data be written to ', process_dir,'\n')
+        file.copy(from = outp_crown_shp_filename, to = temp_outp_crown_shp_filename, overwrite = T)
+        cat('Copying ',basename(outp_crown_shp_filename),' there.\n')
+      }else{
+        temp_outp_crown_shp_filename <- outp_crown_shp_filename
+      }
+
     }
   }else{
     #there is no existing output yet

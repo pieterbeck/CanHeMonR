@@ -30,7 +30,7 @@ in seed_extent to NA. Default is c(NA,NA,NA,NA), which means the seed_shpfile is
 \item{outp_crown_shp_filename}{Base for the output polygon shape filename. **_probcut.shp** will be added to create the final filename.}
 
 \item{process_dir}{An optional directory to write output to while processing. Can come in handy if network access is a bottleneck
-or i/o to the network causes crashes.}
+or i/o to the network causes crashes. Default is NULL in which case output is written to the final destination directory.}
 
 \item{max_crown_RADIUS_in_m}{The maximum radius a crown can have (in image units of **r_file**. Best to work in m). Default is 4.}
 
