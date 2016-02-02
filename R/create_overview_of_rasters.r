@@ -2,23 +2,25 @@
 #' @description Mine through a directory and make a single polygon .shp
 #' where the polygon shows the extent of an image and there's an attribute with the filename. So far only .tif files are considered !
 #' @param dirname Name of the directory to mine through
+#' @param recursive Should files in subdirectories also be considered? Default is F
 #' @return A .shp file written to dirname and named images_overview.shp
 #' @examples \dontrun{
 #' create_overview_of_rasters('H:/FISE/forest/CanopyHealthMonitoring/PWN/imagery/PT_Orto/Ortos_DistrCasteloBranco/')
 #' }
 #' @export
-create_overview_of_rasters <- function(dirname){
+create_overview_of_rasters <- function(dirname, recursive){
   #list all the files in the directory
-  fnames <- list.files(dirname)
+  fnames <- list.files(dirname, recursive = recursive, full.names = T)
   fnames <- fnames[c(grep(".bsq",fnames),grep(".tif", fnames))]
   fnames <- fnames[is.element(substr(fnames, nchar(fnames)-3,nchar(fnames)),c(".bsq", ".tif"))]
-  fnames <- file.path(dirname,fnames)
+  #fnames <- file.path(dirname,fnames)
 
   cat('Making a polygon .shp to represent the extents of \n',fnames, '\n')
   #get the extent
   rpols <- NULL
     for (fname in fnames){
-    r <- raster::raster(fname)
+    cat('working on ',fname,' \n')
+    r <- raster::raster(fname, native = F)
     rpol <- as(raster::extent(r), 'SpatialPolygons')
     raster::projection(rpol) <- raster::projection(r)
     rpol <- sp::spChFIDs(rpol, basename(fname))
@@ -36,12 +38,16 @@ create_overview_of_rasters <- function(dirname){
       }
         rpols <- maptools::spRbind(rpols,rpol)
 
-      }
+    }
+    cat('Polygon of ',fname,' added\n')
     }
 
   attribs <- data.frame(fname = basename(fnames), fullname = fnames,row.names = basename(fnames))
   rpols.df <- sp::SpatialPolygonsDataFrame(Sr = rpols, data = attribs)
-  raster::shapefile(rpols.df,filename = file.path(dirname, 'images_overview.shp'), overwrite = T)
+
+  outpname <- file.path(dirname, 'images_overview.shp')
+
+  raster::shapefile(rpols.df,filename = outpname, overwrite = T)
   cat('Wrote away images_overview.shp in ', dirname,'\n')
   cat('The overview .shp contains ', length(rpols.df),' polygons\n')
   return()

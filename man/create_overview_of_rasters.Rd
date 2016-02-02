@@ -4,10 +4,12 @@
 \alias{create_overview_of_rasters}
 \title{Create A Polygon .shp Of Raster File Extents}
 \usage{
-create_overview_of_rasters(dirname)
+create_overview_of_rasters(dirname, recursive)
 }
 \arguments{
 \item{dirname}{Name of the directory to mine through}
+
+\item{recursive}{Should files in subdirectories also be considered? Default is F}
 }
 \value{
 A .shp file written to dirname and named images_overview.shp
