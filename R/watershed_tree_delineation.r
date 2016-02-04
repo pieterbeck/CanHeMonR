@@ -108,7 +108,7 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
     index_image_tile <- raster::crop(x = index_image, y = tile_extents[[i]])
 
     if(!is.na(raster::maxValue(index_image_tile))){
-      # run the watershed on the smoothed NDVI in matrix form
+      # run the watershed on the index/band image in matrix form
       watershed_smoothness <- ceiling(neighbour_radius / raster::res(index_image_tile)[1])
       w <- EBImage::watershed(raster::as.matrix(index_image_tile), tolerance = watershed_tolerance, ext = watershed_smoothness)
 
