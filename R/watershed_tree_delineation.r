@@ -19,6 +19,8 @@
 #' in tiles. Tiling, and setting max_npix needs to be set if parallel = T. Default is Inf.
 #' @param parallel Logical. Would you like the tiles to be processed in parallel?  Default is False.
 #' @param nWorkers If running the code in parallel, how many workers should be used? Default is 4.
+#' @param writemask Logical. If T, a binary tif file with the same name as rough_crowns_shp_fname will be written away depicting how the
+#' image data was masked before segmenting. Default is F.
 #' @param rough_crowns_shp_fname Character. Filename for the output polygon shapefile. The default is to not write the output away.
 #' @import foreach
 #' @import maptools
@@ -42,7 +44,7 @@
 #' }
 #' @export
 watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", bg_mask, neighbour_radius = 2, watershed_tolerance = .008,
-                                     rough_crowns_shp_fname = '', plott = F, max_npix = Inf, parallel = F, nWorkers = 2,
+                                     rough_crowns_shp_fname = '', writemask = F, plott = F, max_npix = Inf, parallel = F, nWorkers = 2,
                                      bandnames = NULL){
 
   # Installing the EBImage package
@@ -73,6 +75,11 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
     mask_image <- CanHeMonR::get_index_or_wavelength_from_brick(br = input_image, index_name_or_wavelength = bg_mask[[i]])
     #()
     index_image[mask_image < bg_mask[[i+1]]] <- NA# -1
+  }
+
+  if (writemask){
+    mask_fname <- gsub('.shp','.tif',rough_crowns_shp_fname)
+    raster::writeRaster(mask_image, mask_fname, overwrite = T)
   }
 
   # smooth the spectral index image
