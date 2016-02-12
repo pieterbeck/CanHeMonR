@@ -4,7 +4,7 @@
 \alias{create_overview_of_rasters}
 \title{Create A Polygon .shp Of Raster File Extents}
 \usage{
-create_overview_of_rasters(dirname, recursive)
+create_overview_of_rasters(dirname, recursive = F)
 }
 \arguments{
 \item{dirname}{Name of the directory to mine through}

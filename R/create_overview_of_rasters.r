@@ -8,7 +8,7 @@
 #' create_overview_of_rasters('H:/FISE/forest/CanopyHealthMonitoring/PWN/imagery/PT_Orto/Ortos_DistrCasteloBranco/')
 #' }
 #' @export
-create_overview_of_rasters <- function(dirname, recursive){
+create_overview_of_rasters <- function(dirname, recursive = F){
   #list all the files in the directory
   fnames <- list.files(dirname, recursive = recursive, full.names = T)
   fnames <- fnames[c(grep(".bsq",fnames),grep(".tif", fnames))]

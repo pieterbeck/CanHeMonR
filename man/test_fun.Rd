@@ -7,7 +7,7 @@
 test_fun(x)
 }
 \arguments{
-\item{br}{A multispectral raster brick. Layers should be named using the csic convention}
+\item{x}{blala}
 }
 \value{
 A raster layer

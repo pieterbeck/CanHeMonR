@@ -1,6 +1,6 @@
 #' @title Test function for grid
 #' @description Extract from a rasterband a particular wavelength, or spectral index
-#' @param br A multispectral raster brick. Layers should be named using the csic convention
+#' @param x blala
 #' @return A raster layer
 #' @export
 test_fun <- function(x){
