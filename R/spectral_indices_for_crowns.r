@@ -6,16 +6,29 @@
 #' The bands of the raster should be named following the Quantalab convention *X700.000000.Nanometers*
 #' @param index_names Character vector with the names of a spectral indices implemented as a function in CanHeMonR. e.g. "G_over_B".
 #' If left at NULL (the Default), all the individual band values are extracted and returned
+#' @param bandnames Character. In case the bands aren't named according to wavelength and following csic convention, they
+#' can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
 #' @param outname Filename for a shapefile of the output
 #' @return A point shapefile with attribute table, and the points placed at the centroid of each crown.
 #' The attribute table of the shp file maintains the attribute table of the crown but adds a column for each spectral index.
 #' @export
-spectral_indices_for_crowns <- function(crown_shp, r_fname, index_names = NULL, outname = "E:\\beckpie\\temp\\outpout_example2.shp"){
+spectral_indices_for_crowns <- function(crown_shp, r_fname, index_names = NULL,
+                                        bandnames = NULL,outname = "E:\\beckpie\\temp\\outpout_example2.shp"){
 
   #read in the crown shapefile
   crown_pols <- raster::shapefile(crown_shp)
   #read in the image
   r <- raster::brick(r_fname)
+
+  #assign the explicitly provided bandnames if necessary
+  if (!is.null(bandnames)){
+    if (raster::nlayers(r) != length(bandnames)){
+      cat('You should provide as many bandnames as the image has layers\n!')
+      browser()
+    }else{
+      names(r) <- bandnames
+    }
+  }
 
   #check that the layernames of the raster reflect the wavelengths
   if (length(grep("Nano", names(r))) == 0){

@@ -26,7 +26,7 @@ get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
 #' @export
 get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
   if(class(spec_df) == "data.frame"){
-    #keep only those attributes/columns that appear to be spectral msmnts
+    #keep only those attributes/columns that appear to be spectral measurements
     spec_df <- spec_df[,grep("Nano", colnames(spec_df))]
 
     wavelengths <- as.numeric(unlist(lapply((strsplit(colnames(spec_df),split="[X.]")),function(x){x[2]})))
@@ -46,10 +46,10 @@ get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
   return(my_dat)
   }
 
-#' @title Normalized Difference Vegetation Index
+#' @title Normalized Difference Vegetation Index (NDVI)
 #' @description Calculate NDVI
-#' @param df A data frame where columns represent measurements in a single wavelength, and columns
-#' are named following Quantalab's conventions
+#' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
+#' columns (layers) are named following Quantalab's conventions.
 #' @param outp_fname In case the input is raster data, this is the optional output
 #' filename to write the result to
 #' @return A vector with the value of the index
@@ -131,7 +131,7 @@ mod_SR <- function(df, outp_fname = NULL){
   return(outp)
 }
 
-#' @title Optimised Soil-Adjusted Vegetation INdex
+#' @title Optimised Soil-Adjusted Vegetation Index
 #' @description Calculate Renormalized Difference Vegetation Index
 #' @param df A data frame where columns represent measurements in a single wavelength,
 #' and columns are named following Quantalab's conventions

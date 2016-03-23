@@ -6,8 +6,8 @@
 \usage{
 watershed_tree_detection(image_fname, extent, index_name = "NDVI", bg_mask,
   neighbour_radius = 2, watershed_tolerance = 0.008,
-  rough_crowns_shp_fname = "", plott = F, max_npix = Inf, parallel = F,
-  nWorkers = 2, bandnames = NULL)
+  rough_crowns_shp_fname = "", writemask = F, plott = F, max_npix = Inf,
+  parallel = F, nWorkers = 2, bandnames = NULL)
 }
 \arguments{
 \item{image_fname}{Filename of the image to run the tree detection on}
@@ -29,6 +29,9 @@ Higher values causes greater smoothing in the detection of objects, and then tre
 Defualt is 0.08, designed for NDVI.}
 
 \item{rough_crowns_shp_fname}{Character. Filename for the output polygon shapefile. The default is to not write the output away.}
+
+\item{writemask}{Logical. If T, a binary tif file with the same name as rough_crowns_shp_fname will be written away depicting how the
+image data was masked before segmenting. Default is F.}
 
 \item{plott}{Logical. Do you want to plot results? Default is False. T does not work yet!}
 

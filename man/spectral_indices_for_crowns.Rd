@@ -5,6 +5,7 @@
 \title{Calculate Spectral Indices For Individual Tree Crowns}
 \usage{
 spectral_indices_for_crowns(crown_shp, r_fname, index_names = NULL,
+  bandnames = NULL,
   outname = "E:\\\\beckpie\\\\temp\\\\outpout_example2.shp")
 }
 \arguments{
@@ -15,6 +16,9 @@ The bands of the raster should be named following the Quantalab convention *X700
 
 \item{index_names}{Character vector with the names of a spectral indices implemented as a function in CanHeMonR. e.g. "G_over_B".
 If left at NULL (the Default), all the individual band values are extracted and returned}
+
+\item{bandnames}{Character. In case the bands aren't named according to wavelength and following csic convention, they
+can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.}
 
 \item{outname}{Filename for a shapefile of the output}
 }
