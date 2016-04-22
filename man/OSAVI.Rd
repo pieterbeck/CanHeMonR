@@ -2,7 +2,7 @@
 % Please edit documentation in R/spectral_indices.r
 \name{OSAVI}
 \alias{OSAVI}
-\title{Optimised Soil-Adjusted Vegetation INdex}
+\title{Optimised Soil-Adjusted Vegetation Index}
 \usage{
 OSAVI(df, outp_fname = NULL)
 }

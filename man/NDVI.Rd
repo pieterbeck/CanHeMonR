@@ -2,13 +2,13 @@
 % Please edit documentation in R/spectral_indices.r
 \name{NDVI}
 \alias{NDVI}
-\title{Normalized Difference Vegetation Index}
+\title{Normalized Difference Vegetation Index (NDVI)}
 \usage{
 NDVI(df, outp_fname = NULL)
 }
 \arguments{
-\item{df}{A data frame where columns represent measurements in a single wavelength, and columns
-are named following Quantalab's conventions}
+\item{df}{A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
+columns (layers) are named following Quantalab's conventions.}
 
 \item{outp_fname}{In case the input is raster data, this is the optional output
 filename to write the result to}
@@ -23,7 +23,7 @@ Calculate NDVI
 \dontrun{
 #Calculate the NDVI from a 6 band multispectral image
 my_ms_data <- raster::brick('H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq')
-my_NDVI <- NDVI(my_ms_data)
+my_NDVI <- CanHeMonR::NDVI(my_ms_data)
 }
 }
 \references{

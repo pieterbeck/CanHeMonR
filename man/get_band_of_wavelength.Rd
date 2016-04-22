@@ -19,4 +19,7 @@ the column or rasterlayer with measurements in the chosen wavelength
 Extract from a dataframe where columns are measurements in individual wavelengths,
 and named following Quantalab's convention, the data that are closest to a chosen wavelegth.
 }
+\note{
+TO DO: adapt to keep decimals in wavelength value written in layer name
+}
 

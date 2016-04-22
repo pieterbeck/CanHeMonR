@@ -23,6 +23,7 @@ get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
 #' and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.
 #' @param wavelength_in_nm Integer The wavelength of interest, in nm.
 #' @return the column or rasterlayer with measurements in the chosen wavelength
+#' @note TO DO: adapt to keep decimals in wavelength value written in layer name
 #' @export
 get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
   if(class(spec_df) == "data.frame"){
@@ -58,13 +59,15 @@ get_band_of_wavelength <- function(spec_df, wavelength_in_nm){
 #' \dontrun{
 #' #Calculate the NDVI from a 6 band multispectral image
 #' my_ms_data <- raster::brick('H:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq')
-#' my_NDVI <- NDVI(my_ms_data)
+#' my_NDVI <- CanHeMonR::NDVI(my_ms_data)
 #' }
 #' @export
 NDVI <- function(df, outp_fname = NULL){
   R670 <- get_band_of_wavelength(df, 670)
   R800 <- get_band_of_wavelength(df, 800)
+
   outp <- (R800 - R670) / (R800 + R670 )
+
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
@@ -104,7 +107,9 @@ RDVI <- function(df, outp_fname = NULL){
 SR <- function(df, outp_fname = NULL){
   R670 <- get_band_of_wavelength(df, 670)
   R800 <- get_band_of_wavelength(df, 800)
+
   outp <- R800 / R670
+
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
