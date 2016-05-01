@@ -476,7 +476,7 @@ TCARI <- function(df, outp_fname = NULL, ...){
 TCARI_over_OSAVI <- function(df, outp_fname = NULL, ...){
   R670 <- get_band_of_wavelength(df, 670, ...)
   R800 <- get_band_of_wavelength(df, 800, ...)
-  outp <- TCARI(df) / ((1 + 0.16) * (R800 - R670) / (R800 + R670 + 0.16))
+  outp <- TCARI(df, ...) / ((1 + 0.16) * (R800 - R670) / (R800 + R670 + 0.16))
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
@@ -1026,7 +1026,7 @@ PRI670_570 <- function(df, outp_fname = NULL, ...){
 PRIn <- function(df, outp_fname = NULL, ...){
   R670 <- get_band_of_wavelength(df, 670, ...)
   R700 <- get_band_of_wavelength(df, 700, ...)
-  outp <- ( CanHeMonR::PRI570(df)) / ( CanHeMonR::RDVI(df) * R700/R670)
+  outp <- ( CanHeMonR::PRI570(df, ...)) / ( CanHeMonR::RDVI(df, ...) * R700/R670)
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
