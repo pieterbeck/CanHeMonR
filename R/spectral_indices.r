@@ -30,7 +30,7 @@ get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
 #' @note TO DO: adapt to keep decimals in wavelength value written in layer name
 #' @export
 get_band_of_wavelength <- function(spec_df, wavelength_in_nm, band_txt = 'Nano', splitter="[X.]", i = 2){
-  if(class(spec_df) == "data.frame"){
+  if((class(spec_df) == "data.frame")|(class(spec_df) == "matrix")){
     #keep only those attributes/columns that appear to be spectral measurements
     spec_df <- spec_df[,grep(band_txt, colnames(spec_df))]
 
@@ -151,6 +151,7 @@ mod_SR <- function(df, outp_fname = NULL, ...){
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
+#' @notes mostly structure-sensitive
 #' @references Rondeaux et al. 1996
 #' @export
 OSAVI <- function(df, outp_fname = NULL, ...){
@@ -289,6 +290,8 @@ MCARI2 <- function(df, outp_fname = NULL, ...){
   R800 <- get_band_of_wavelength(df, 800, ...)
   outp <- 1.2 * (2.5*(R800 - R670) - 1.3 * (R800 - R550))/
     sqrt((2 * R800 + 1)^2 - (6 * R800 - 5*sqrt(R670) ) - 0.5)
+
+
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
@@ -450,6 +453,8 @@ GM2 <- function(df, outp_fname = NULL, ...){
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
+#' @notes TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
+#' TCARI/OSAVI estimates chlorohyll content better in eg mais crops over a range of LAI values
 #' @references Haboudane et al. 2002
 #' @export
 TCARI <- function(df, outp_fname = NULL, ...){
@@ -472,6 +477,8 @@ TCARI <- function(df, outp_fname = NULL, ...){
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
 #' @references Haboudane et al. 2002
+#' @notes TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
+#' TCARI/OSAVI estimates chlorohyll content better in eg mais crops over a range of LAI values
 #' @export
 TCARI_over_OSAVI <- function(df, outp_fname = NULL, ...){
   R670 <- get_band_of_wavelength(df, 670, ...)
@@ -647,8 +654,8 @@ datt_NIRCabCx_c <- function(df, outp_fname = NULL, ...){
   return( outp)
 }
 
-#' @title Structure-Intensive Pigment Index
-#' @description Calculate Structure-Intensive Pigment Index
+#' @title Structure-Insensitive Pigment Index
+#' @description Calculate Structure-Insensitive Pigment Index
 #' @param df A data frame where columns represent measurements in a single wavelength,
 #' and columns are named following Quantalab's conventions
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
@@ -1026,7 +1033,7 @@ PRI670_570 <- function(df, outp_fname = NULL, ...){
 PRIn <- function(df, outp_fname = NULL, ...){
   R670 <- get_band_of_wavelength(df, 670, ...)
   R700 <- get_band_of_wavelength(df, 700, ...)
-  outp <- ( CanHeMonR::PRI570(df, ...)) / ( CanHeMonR::RDVI(df, ...) * R700/R670)
+  outp <- ( CanHeMonR::PRI570(df, ...)) / abs( CanHeMonR::RDVI(df, ...) * R700/R670)
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
     cat('Spectral index written away as raster to: ',outp_fname, '\n')
