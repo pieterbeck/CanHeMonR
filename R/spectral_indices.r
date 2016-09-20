@@ -29,7 +29,7 @@ get_index_or_wavelength_from_brick <- function(br, index_name_or_wavelength){
 #' @return the column or rasterlayer with measurements in the chosen wavelength
 #' @note TO DO: adapt to keep decimals in wavelength value written in layer name
 #' @export
-get_band_of_wavelength <- function(spec_df, wavelength_in_nm, band_txt = 'Nano', splitter="[X.]", i = 2){
+get_band_of_wavelength <- function(spec_df, wavelength_in_nm, band_txt = 'X', splitter="[X.]", i = 2){
   if((class(spec_df) == "data.frame")|(class(spec_df) == "matrix")){
     #keep only those attributes/columns that appear to be spectral measurements
     spec_df <- spec_df[,grep(band_txt, colnames(spec_df))]
@@ -151,7 +151,7 @@ mod_SR <- function(df, outp_fname = NULL, ...){
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
-#' @notes mostly structure-sensitive
+#' @note mostly structure-sensitive
 #' @references Rondeaux et al. 1996
 #' @export
 OSAVI <- function(df, outp_fname = NULL, ...){
@@ -453,7 +453,7 @@ GM2 <- function(df, outp_fname = NULL, ...){
 #' @param outp_fname In case the input is raster data, this is the optional output filename to write the result to
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
-#' @notes TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
+#' @note TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
 #' TCARI/OSAVI estimates chlorohyll content better in eg mais crops over a range of LAI values
 #' @references Haboudane et al. 2002
 #' @export
@@ -477,7 +477,7 @@ TCARI <- function(df, outp_fname = NULL, ...){
 #' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
 #' @return A vector with the value of the index
 #' @references Haboudane et al. 2002
-#' @notes TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
+#' @note TCARI is mostly pigment related but, at least in crops, is also sensitive to structure. Hence
 #' TCARI/OSAVI estimates chlorohyll content better in eg mais crops over a range of LAI values
 #' @export
 TCARI_over_OSAVI <- function(df, outp_fname = NULL, ...){

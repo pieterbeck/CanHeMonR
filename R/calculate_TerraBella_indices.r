@@ -1,23 +1,26 @@
 #' @title Calculate TerraBella spectral indices
 #' @description When given a TerraBella .tif file, calculate chosen spectral indices
-#' @param inp_tif_fname Filenames of an TerraBella tif files
+#' @param inp_tif_fnames Filenames of an TerraBella tif files
 #' @param index_names Character vector of spectral indices (see CanHeMonR::spectral_indices)
 #' you want to have calculated. Remember TerraBella is 4 broad bands only
 #' @param outp_dir Directory to write output to
+#' @param overwrite Should existing output be overwritten? Default is T.
 #' @return a raster brick with the chosen indices and a file for each index,
 #' written away to the output directory
 #' @note TO DO: adapt to work in parallel
 #' @examples \dontrun{
 #' #calculate NDVI for all the TerraBella scenes of Granadilla
-#' inpdir <- 'X:/Imagery/Granadilla/Skybox'
+#' raster::rasterOptions(progress='text')
+#' raster::rasterOptions(tmpdir = 'E:/beckpie/temp/Raster_temp/')
+#' inpdir <- 'X:/Imagery/Granadilla/Skybox/dark_object_corrected'
 #' fnames <- list.files(inpdir)
 #' fnames <- fnames[grep('.tif',fnames)]
 #' fnames <- fnames[substr(fnames,nchar(fnames)-3,nchar(fnames))==".tif"]
 #' fnames <- file.path(inpdir, fnames)
 #'
-#' raster::rasterOptions(progress='text')
+
 #' calculate_TerraBella_indices(inp_tif_fnames = fnames, index_names='NDVI',
-#'                            outp_dir ="X:/Imagery/Granadilla/Skybox/spectral_indices")
+#'                            outp_dir ="X:/Imagery/Granadilla/Skybox/dark_object_corrected/spectral_indices")
 #' }
 #' @export
 calculate_TerraBella_indices  <- function(inp_tif_fnames, index_names, outp_dir, overwrite = T){

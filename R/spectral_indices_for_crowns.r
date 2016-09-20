@@ -5,7 +5,7 @@
 #' @param r_fname Raster file of the image to calculate the spectral index from.
 #' The bands of the raster should be named following the Quantalab convention *X700.000000.Nanometers*
 #' @param index_names Character vector with the names of a spectral indices implemented as a function in CanHeMonR. e.g. "G_over_B".
-#' If left at NULL (the Default), all the individual band values are extracted and returned
+#' @param all_bands Logical. Should individual band values be returned? Default = T
 #' @param bandnames Character. In case the bands aren't named according to wavelength and following csic convention, they
 #' can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.
 #' @param outname Filename for a shapefile of the output
@@ -13,7 +13,9 @@
 #' The attribute table of the shp file maintains the attribute table of the crown but adds a column for each spectral index.
 #' @export
 spectral_indices_for_crowns <- function(crown_shp, r_fname, index_names = NULL,
-                                        bandnames = NULL,outname = "E:\\beckpie\\temp\\outpout_example2.shp"){
+                                        bandnames = NULL, all_bands = T, outname = "E:\\beckpie\\temp\\outpout_example2.shp"){
+
+  raster::rasterOptions(progress = "text")
 
   #read in the crown shapefile
   crown_pols <- raster::shapefile(crown_shp)
@@ -37,15 +39,30 @@ spectral_indices_for_crowns <- function(crown_shp, r_fname, index_names = NULL,
     browser()
   }
 
-  #extract image values for each crown
+  #extract individual band values for each crown
   #averaging the band values across each crown
   r_crown_vals <- raster::extract(r,crown_pols,fun = mean, na.rm=T)
-  r_crown_vals_df <- cbind.data.frame(slot(crown_pols,"data"),as.data.frame(r_crown_vals))
+
+  #get the additional attributes to append output to
+  r_crown_vals_df <- slot(crown_pols,"data")
+  #remove any preexisting columns that coincide with the requested indices!
+  pre_existing_indices <- index_names[index_names %in% colnames(r_crown_vals_df)]
+  if (length(pre_existing_indices) > 0){
+    cat('The following indices were already present in the attributes and will be overwritten!:\n')
+    print(pre_existing_indices)
+    r_crown_vals_df <- dplyr::select(r_crown_vals_df,-dplyr::one_of(index_names))
+  }
+
+  #if requested, add the individual band values
+  if (all_bands){
+    r_crown_vals_df <- cbind.data.frame(r_crown_vals_df,as.data.frame(r_crown_vals))
+  }
+
 
 
   #calculate and add a spectral index
   for (index_name in index_names){
-    calculated_index <- get(index_name)(df = r_crown_vals_df)
+    calculated_index <- get(index_name)(df = r_crown_vals)
     r_crown_vals_df <- cbind.data.frame(r_crown_vals_df,calculated_index)
     colnames(r_crown_vals_df)[ncol(r_crown_vals_df)] <- index_name
   }
