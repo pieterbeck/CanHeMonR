@@ -16,7 +16,7 @@ A .shp file written to dirname and named images_overview.shp
 }
 \description{
 Mine through a directory and make a single polygon .shp
-where the polygon shows the extent of an image and there's an attribute with the filename. So far only .tif files are considered !
+where the polygon shows the extent of an image and there's an attribute with the filename. So far only .tif, .bsq, and .dem files are considered !
 }
 \examples{
 \dontrun{

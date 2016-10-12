@@ -1,6 +1,6 @@
 #' @title Create A Polygon .shp Of Raster File Extents
 #' @description Mine through a directory and make a single polygon .shp
-#' where the polygon shows the extent of an image and there's an attribute with the filename. So far only .tif files are considered !
+#' where the polygon shows the extent of an image and there's an attribute with the filename. So far only .tif, .bsq, and .dem files are considered !
 #' @param dirname Name of the directory to mine through
 #' @param recursive Should files in subdirectories also be considered? Default is F
 #' @return A .shp file written to dirname and named images_overview.shp
@@ -11,8 +11,8 @@
 create_overview_of_rasters <- function(dirname, recursive = F){
   #list all the files in the directory
   fnames <- list.files(dirname, recursive = recursive, full.names = T)
-  fnames <- fnames[c(grep(".bsq",fnames),grep(".tif", fnames))]
-  fnames <- fnames[is.element(substr(fnames, nchar(fnames)-3,nchar(fnames)),c(".bsq", ".tif"))]
+  fnames <- fnames[c(grep(".bsq",fnames),grep(".tif", fnames),grep('.dem',fnames))]
+  fnames <- fnames[is.element(substr(fnames, nchar(fnames)-3,nchar(fnames)),c(".bsq", ".tif", ".dem"))]
   #fnames <- file.path(dirname,fnames)
 
   cat('Making a polygon .shp to represent the extents of \n',fnames, '\n')
