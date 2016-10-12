@@ -4,23 +4,25 @@
 \alias{spectral_indices_for_crowns}
 \title{Calculate Spectral Indices For Individual Tree Crowns}
 \usage{
-spectral_indices_for_crowns(crown_shp, r_fname, index_names = NULL,
-  bandnames = NULL,
-  outname = "E:\\\\beckpie\\\\temp\\\\outpout_example2.shp")
+spectral_indices_for_crowns(crown_SpatPoldf, r_fname, index_names = NULL,
+  bandnames = NULL, all_bands = T, shp_outname = NULL)
 }
 \arguments{
-\item{crown_shp}{Shapefile depicting crowns}
+\item{crown_SpatPoldf}{SpatialPolygonsDataFrame depicting crowns}
 
 \item{r_fname}{Raster file of the image to calculate the spectral index from.
 The bands of the raster should be named following the Quantalab convention *X700.000000.Nanometers*}
 
 \item{index_names}{Character vector with the names of a spectral indices implemented as a function in CanHeMonR. e.g. "G_over_B".
-The index_name 'all_bands' can be included to also return individual band values}
+If left to NULL (the default) and all_bands is T, then only the average band values, and no indices are returned. This is useful when
+extracting values from a DEM image for example.}
 
 \item{bandnames}{Character. In case the bands aren't named according to wavelength and following csic convention, they
 can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.}
 
-\item{outname}{Filename for a shapefile of the output}
+\item{all_bands}{Logical. Should individual band values be returned? Default = T}
+
+\item{shp_outname}{Filename for a shapefile of the output. If NULL, no output file is written away. Default is NULL.}
 }
 \value{
 A point shapefile with attribute table, and the points placed at the centroid of each crown.
@@ -28,6 +30,6 @@ The attribute table of the shp file maintains the attribute table of the crown b
 }
 \description{
 Calculate one or more spectral indices for individual
-tree crowns depicted in a polygon shapefile and a provided raster image and write the output to a .shp
+tree crowns depicted in a polygon shapefile and a provided raster image and write the output optionally to a .shp
 }
 

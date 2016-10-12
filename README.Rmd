@@ -287,6 +287,13 @@ test <- assign_crowncells_quantile(r = r_layer, crown_shp = crown_shp, outpname_
 ```
 
 
+## Build a a database of spectral indices for crowns - crown_indices_from_bigshape.r
+
+This wrapper for spectral_indices_for_crowns.r allows you to build a master SpatialPolygonsDataFrame containing crown-level information 
+obtained from different flights, sensors, and tree locations.
+
+
+
 ## Calculate spectral indices for crowns - spectral_indices_for_crowns.r
 
 Calculate one or more spectral indices for individual

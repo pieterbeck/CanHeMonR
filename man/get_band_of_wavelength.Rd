@@ -4,17 +4,21 @@
 \alias{get_band_of_wavelength}
 \title{Get The Measurements Made In A Chosen Wavelength}
 \usage{
-get_band_of_wavelength(spec_df, wavelength_in_nm, band_txt = "X",
-  splitter = "[X.]", i = 2)
+get_band_of_wavelength(spec_df, wavelengths_in_nm = NULL,
+  wavelength_range = NULL, band_txt = "X", splitter = "[X.]", i = 2)
 }
 \arguments{
 \item{spec_df}{Dataframe or RasterBrick of spectral measurements, with a column per band/spectral wavelength,
 and columns (layers if spec_df is RasterBrick) named following Quantalab's convention.}
 
-\item{wavelength_in_nm}{Integer The wavelength of interest, in nm.}
+\item{wavelengths_in_nm}{Numeric vector. The wavelength(s) of interest, in nm. Defualt is NULL}
 
-\item{band_txt}{Character. A piece of text that only occurs in columns/layers that have radiance/reflectance values.
-Default is "Nano"}
+\item{wavelength_range}{Numeric vector of length 2. Instead of requesting observations (columns
+or rasterlayers) for specific wavelengths  (through wavelengths_in_nm ), one can requests all
+observations falling in a specific wavelength range to be returned in a given range. Default is NULL}
+
+\item{band_txt}{Character. A piece of text that only occurs in columns/layers that have
+radiance/reflectance values. Default is "X"}
 
 \item{splitter}{character. The character that can be used in strpslit to isolate the wavelength value. Default is "[X.]"}
 
