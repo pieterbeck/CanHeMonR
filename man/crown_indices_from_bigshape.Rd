@@ -5,7 +5,7 @@
 \title{Crown-level spectral indices for a big shapefile}
 \usage{
 crown_indices_from_bigshape(field_dat, image_fname, flight_name., sensor.,
-  indices., outp_SpatPol_fname, bandnames. = NULL)
+  indices., outp_SpatPol_fname, bandnames. = NULL, extract_as_points = F)
 }
 \arguments{
 \item{field_dat}{SpatialPolygons(DataFrame) to extract values for}
@@ -22,6 +22,9 @@ useful when image_fname is a DEM for example.}
 \item{outp_SpatPol_fname}{Filename for the output SpatialPolygonsDataFrame.}
 
 \item{bandnames.}{Optional bandnames of the image_fname. If set to NULL (the default), bandnames will be read from image_fname}
+
+\item{extract_as_points}{Logical. Should the SpatialPolygons be converted to SpatialPoints before extracting pixel values?
+This can be useful and save lots of time when the polygons are smaller than the cel size of the image. Default is FALSE.}
 }
 \description{
 Append a big SpatialPolygonDataFrame with crown-level indices and band values extracted from an image file.

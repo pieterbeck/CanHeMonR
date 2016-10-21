@@ -5,7 +5,8 @@
 \title{Calculate Spectral Indices For Individual Tree Crowns}
 \usage{
 spectral_indices_for_crowns(crown_SpatPoldf, r_fname, index_names = NULL,
-  bandnames = NULL, all_bands = T, shp_outname = NULL)
+  bandnames = NULL, all_bands = T, extract_as_points = F,
+  shp_outname = NULL)
 }
 \arguments{
 \item{crown_SpatPoldf}{SpatialPolygonsDataFrame depicting crowns}
@@ -21,6 +22,9 @@ extracting values from a DEM image for example.}
 can be provided. Default is NULL in which cases bandnames are read from the image file and csic naming convention is assumed.}
 
 \item{all_bands}{Logical. Should individual band values be returned? Default = T}
+
+\item{extract_as_points}{Logical. Should the SpatialPolygons be converted to SpatialPoints before extracting pixel values?
+This can be useful and save lots of time when the polygons are smaller than the cel size of the image. Default is FALSE.}
 
 \item{shp_outname}{Filename for a shapefile of the output. If NULL, no output file is written away. Default is NULL.}
 }

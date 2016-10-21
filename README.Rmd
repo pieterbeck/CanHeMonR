@@ -249,10 +249,10 @@ shift_polygons_to_points(polygon_shp, point_shp, outp_fname, extent_to_process =
 
 #### Challenge
 
-Portions of crowns can be quite heavily shaded, comprising the spectral indices from the. Furthermore, when crowns delineated in 
+Portions of crowns can be quite heavily shaded, comprising the mean spectral indices estimated for the crown. Furthermore, when crowns delineated in 
 multispectral imagery, are used to estimated crown temperature in thermal imagery, it is particularly useful to exclude the cooler, shadow-section of the crown.
 This code allows one to calculate for every pixel in a crown its quantile, ie rank, based on a single spectral band or index.
-This value (e.g. NIR reflectance rank in the crown) can then be used as a mask while extract thermal metrics from crowns.
+This value (e.g. NIR reflectance rank in the crown) can then be used as a mask while extracting thermal metrics from crowns.
 
 #### Input
 * A raster file to draw values from, and that will serve as the spatial template for the output

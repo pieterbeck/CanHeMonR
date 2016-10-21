@@ -94,8 +94,11 @@ watershed_tree_detection <- function(image_fname, extent, index_name = "NDVI", b
 
   #set up the cluster for parallel processing if requested
     try(parallel::stopCluster(cl), silent=T)
-    # TO DO add a line that avoids allocating more workers than you have cores
+
   if (parallel){
+    no_cores <- parallel::detectCores() - 1
+    cl <- parallel::makeCluster(min(c(nWorkers, no_cores)))
+
     cl <- parallel::makeCluster(nWorkers)
     doParallel::registerDoParallel(cl)
   }
