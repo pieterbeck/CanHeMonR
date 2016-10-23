@@ -118,7 +118,7 @@ require(CanHeMonR)
 tps2d_seeds(reference_seeds_shp, target_seeds_shp, target_ref_ID_pairs, outp_shp_fname)
 ```
 
-## Crown delineation - region_growing_wrapper.r
+## Crown delineation from seed points - region_growing_wrapper.r
 
 #### Input
 
@@ -245,7 +245,7 @@ extent_to_process <- raster::extent(c(747287,748000,4463535,4464600))
 shift_polygons_to_points(polygon_shp, point_shp, outp_fname, extent_to_process = NA, attributes_to_retain = c('primalX' ,'primalY'))
 ```
 
-## Mask the shadow sections of a crown - assigns_crown_cells_quantile
+## Mask the shadow sections of a crown - assign_crowncells_quantile / assign_crowncells_quantile_parallel
 
 #### Challenge
 
@@ -257,12 +257,12 @@ This value (e.g. NIR reflectance rank in the crown) can then be used as a mask w
 #### Input
 * A raster file to draw values from, and that will serve as the spatial template for the output
 * A polygon shapefile depicting crowns that overlays r
-* A filename for the raster output
+* A filename for the raster output (only for non-parallel)
 * An optional filename from .shp output of trimmed crown polygons
 * The quantile values that are used to determine the trimmed crowns
 
 #### Output
-A raster file, with the same spatial attributes as r and values between 0 and 100 for cells in polygons, and NA outside polygons.
+A raster file, with the same spatial attributes as r and values between 0 and 100 for cells in polygons, and NA outside polygons. (only for non-parallel)
 An optional shp file of trimmed polygons.
 
 ```{r, eval=FALSE}
@@ -287,11 +287,23 @@ test <- assign_crowncells_quantile(r = r_layer, crown_shp = crown_shp, outpname_
 ```
 
 
-## Build a a database of spectral indices for crowns - crown_indices_from_bigshape.r
+## Build a database of spectral indices for crowns - crown_indices_from_bigshape.r
 
 This wrapper for spectral_indices_for_crowns.r allows you to build a master SpatialPolygonsDataFrame containing crown-level information 
 obtained from different flights, sensors, and tree locations.
 
+#### Input
+* A SpatialPolygons(DataFrame) to extract values for
+* An Image to extract values from
+* There's an option to convert SpatialPolygons to SpatialPoints before extracting pixel values. This can be useful and save lots of time when the polygons are smaller than the cel size of the image. Default is FALSE.
+* Names of flights for which to extract data. If 'ALL' then data from all flights will be extracted.
+* Names of sensors for which to extract data. If 'ALL' then data from all sensors will be extracted.
+* Names of Indices to calculate. If NULL (the default) only individual bands values are returned. This is useful when image_fname is a DEM for example.
+* Optionally, the bandnames of the image_fname. If set to NULL (the default), bandnames will be read from image_fname
+
+#### Output
+
+* A SpatialPolygonsDataFrame.
 
 
 ## Calculate spectral indices for crowns - spectral_indices_for_crowns.r
@@ -342,6 +354,7 @@ my_NDVI <- NDVI(my_ms_data, outp_fname = 'E:/beckpie/temp/crown_150727_mca_NDVI.
 ```
 
 
+
 ## Merge spectral indices calculated from different images - merge_pnt_shp_files_by_attributes.r
 
 The extraction of spectral indices from tree crowns is done independently for different images, using their particular crown data set.
@@ -349,7 +362,7 @@ The extraction of spectral indices from tree crowns is done independently for di
 and 'primal_Y' attributes).
 **merge_pnt_shp_files_by_attributes** combines the indices extracted from different images into a single point .shp.
 
-he attributes in the output have a 'i#' prefex referring
+The attributes in the output have a 'i#' prefex referring
 to the input it drew from. It also writes away a text file that links the ix numbering in the attribute names of the .shp back to the filenames
 of the single-image files. The filename of the text file is outp_shp with '.txt' appended
 
@@ -445,7 +458,7 @@ Calculates 25 m FTY maps (services element 2 of high res forest layers) for the 
 ## fty_PTES_border_zones.Rmd
 Summarizes the forest cover in the official and 20  and 40 km buffer zones
 
-# Flight campaing planning
+# Flight campaign planning
 ## Areas_to_fly_summer_2015.r
 Creates and measures the 40.000 ha area designated for imaging this summer. It then cuts it up into lots and blocks and gives summary statistics for each
 
