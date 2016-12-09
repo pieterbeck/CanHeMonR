@@ -1,19 +1,21 @@
 #' @title Crown-level spectral indices for a big shapefile
 #' @description Append a big SpatialPolygonDataFrame with crown-level indices and band values extracted from an image file.
-#' The extraction can be tuned to only apply to polygons that correspond to the flight and sensor that acquired the imgae file.
+#' The extraction can be tuned to only apply to polygons that correspond to the flight and sensor that acquired the image file.
 #' The extraction can also be tuned to get values from a DEM, or other topographical layer. In that cases no indices are calculated.
 #' @param field_dat SpatialPolygons(DataFrame) to extract values for
 #' @param image_fname Image to extract values from
 #' @param extract_as_points Logical. Should the SpatialPolygons be converted to SpatialPoints before extracting pixel values?
 #' This can be useful and save lots of time when the polygons are smaller than the cel size of the image. Default is FALSE.
 #' @param flight_name. Character vector. Names of flights for which to extract data. If 'ALL' then data from all flights will be extracted.
+#' Default is 'ALL'.
 #' @param sensor. Character vector. Names of sensors for which to extract data. If 'ALL' then data from all sensors will be extracted.
+#' Default is 'ALL'.
 #' @param indices. Character vector. Indices to calculate. If NULL (the default) only individual bands values are returned. This is
 #' useful when image_fname is a DEM for example.
 #' @param outp_SpatPol_fname Filename for the output SpatialPolygonsDataFrame.
 #' @param bandnames. Optional bandnames of the image_fname. If set to NULL (the default), bandnames will be read from image_fname
 #' @export
-crown_indices_from_bigshape <- function(field_dat, image_fname, flight_name., sensor., indices., outp_SpatPol_fname,
+crown_indices_from_bigshape <- function(field_dat, image_fname, flight_name.  = 'ALL', sensor. = 'ALL', indices., outp_SpatPol_fname,
                                       bandnames. = NULL, extract_as_points = F){
   #read in the bigshapefile
   #load(bigSpatPol_fname)
@@ -80,7 +82,15 @@ crown_indices_from_bigshape <- function(field_dat, image_fname, flight_name., se
   represented_band_names <- unique(grep(paste(paste0('X',1:10), collapse="|"),colnames(index_dat.),value=T))
   columns_NOT_to_join_by <- c(indices.,represented_band_names)
   columns_to_join_by <- setdiff( intersect(colnames(field_dat.),colnames(index_dat.)), columns_NOT_to_join_by)
-  outp <- dplyr::left_join(field_dat., index_dat., by = columns_to_join_by)
+
+  #not sure about this behaviour. Perhaps you can use semi_join in all cases....
+  if (length(columns_NOT_to_join_by) == 0){
+    #outp <- dplyr::semi_join(field_dat., index_dat., by = columns_to_join_by)
+    #in a case where index_dat. had all the columns of field_dat., with one more, the join yielding the correct result was:
+    outp <- dplyr::left_join(field_dat., index_dat., by = columns_to_join_by)
+  }else{
+    outp <- dplyr::left_join(field_dat., index_dat., by = columns_to_join_by)
+  }
 
   #you'll now potentially have multiple columns for an individual index (e.g. NDVI.x and NDVI.y), and for individual bands,
   #e.g. ("X670.000000.Nanometers.x"and "X670.000000.Nanometers.y")  consolidate them
