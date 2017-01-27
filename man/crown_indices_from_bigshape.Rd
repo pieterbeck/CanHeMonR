@@ -4,17 +4,20 @@
 \alias{crown_indices_from_bigshape}
 \title{Crown-level spectral indices for a big shapefile}
 \usage{
-crown_indices_from_bigshape(field_dat, image_fname, flight_name., sensor.,
-  indices., outp_SpatPol_fname, bandnames. = NULL, extract_as_points = F)
+crown_indices_from_bigshape(field_dat, image_fname, flight_name. = "ALL",
+  sensor. = "ALL", indices., outp_SpatPol_fname, bandnames. = NULL,
+  extract_as_points = F)
 }
 \arguments{
 \item{field_dat}{SpatialPolygons(DataFrame) to extract values for}
 
 \item{image_fname}{Image to extract values from}
 
-\item{flight_name.}{Character vector. Names of flights for which to extract data. If 'ALL' then data from all flights will be extracted.}
+\item{flight_name.}{Character vector. Names of flights for which to extract data. If 'ALL' then data from all flights will be extracted.
+Default is 'ALL'.}
 
-\item{sensor.}{Character vector. Names of sensors for which to extract data. If 'ALL' then data from all sensors will be extracted.}
+\item{sensor.}{Character vector. Names of sensors for which to extract data. If 'ALL' then data from all sensors will be extracted.
+Default is 'ALL'.}
 
 \item{indices.}{Character vector. Indices to calculate. If NULL (the default) only individual bands values are returned. This is
 useful when image_fname is a DEM for example.}
@@ -28,7 +31,7 @@ This can be useful and save lots of time when the polygons are smaller than the 
 }
 \description{
 Append a big SpatialPolygonDataFrame with crown-level indices and band values extracted from an image file.
-The extraction can be tuned to only apply to polygons that correspond to the flight and sensor that acquired the imgae file.
+The extraction can be tuned to only apply to polygons that correspond to the flight and sensor that acquired the image file.
 The extraction can also be tuned to get values from a DEM, or other topographical layer. In that cases no indices are calculated.
 }
 
