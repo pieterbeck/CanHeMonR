@@ -159,7 +159,7 @@ grow_crowns <- function(r_file,
       cat(length(analyzed_seeds_index),' of the ',length(seeds), ' provided seeds already have crowns in the existing output\n')
 
       if (length(analyzed_seeds_index) > 0 ){
-        #the indices rerturned by sp::over start at 0
+        #the indices returned by sp::over start at 0
         #analyzed_seeds_index <- analyzed_seeds_index + 1
 
         plot(seeds[analyzed_seeds_index,], pch = 20, col = 4 , cex = 0.1, add = T)
