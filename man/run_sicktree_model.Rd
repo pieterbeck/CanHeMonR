@@ -23,7 +23,7 @@ Saves rasters predicted by the model
 For each class in .shp polygon file, run an existing, calibrated, distribution model using a raster brick as predictors
 }
 \note{
-Run in 32-bit R installation
+Run in 32-bit R installation. Implement optional parallel
 }
 \examples{
 \dontrun{

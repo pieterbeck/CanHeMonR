@@ -31,7 +31,7 @@ Saves class-specific distribution models, using image layers as inputs
 For each class in .shp polygon file, calibrate a distribution model using a raster brick as predictors
 }
 \note{
-Run in 32-bit R installation. Do you need a 'require(rJava)?'
+Run in 32-bit R installation. Do you need a 'require(rJava)?'. Implement optional parallel
 }
 \examples{
 \dontrun{
