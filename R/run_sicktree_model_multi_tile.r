@@ -2,7 +2,7 @@
 #' @description Run a saved MaxEnt model in predictive mode on a tile of image data
 #' @param fname_predictors_txt Textfile specifying the predictors (ie covariates) for the model as image filenames in the correct order
 #' @param fname_MaxEntmodel_r Filename of the MaxEnt model saved in rds format (see ?readRDS)
-#' @param fname_output_tif Filename for the output tif
+#' @param output_dir Output directory for the tif
 #' @note Run in 32-bit R installation.
 #' @return Saves class-specific distribution models as raster images, using image layers as inputs
 #' @examples \dontrun{

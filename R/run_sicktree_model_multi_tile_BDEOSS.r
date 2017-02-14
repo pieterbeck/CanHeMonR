@@ -24,7 +24,7 @@ run_sicktree_model_multitile <- function(
                                          fname_predictors_txt,
                                          MaxEntmodel_dir,
                                          fname_MaxEntmodel_r,
-                                         output_dir,
+                                         output_dir
                                          ){
 
   #required R libraries
@@ -62,7 +62,8 @@ run_sicktree_model_multitile <- function(
   px <- round(255*px)
 
   fname_output_tif <- file.path(output_dir,
-                                paste0(unlist(strsplit(fname_predictors_txt,".txt")),unlist(strsplit(fname_MaxEntmodel_r,".rdsdata")), ".tif")
+                                paste0(unlist(strsplit(fname_predictors_txt,".txt")),
+                                       unlist(strsplit(fname_MaxEntmodel_r,".rdsdata")), ".tif")
                                 )
   raster::writeRaster(px,filename = fname_output_tif, overwrite = T, dataType = 'INT1U' )
 
