@@ -80,6 +80,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
     doParallel::registerDoParallel(cl)
   }
   #choose the appropriate operator for the foreach loop
+  require(foreach)
   `%op%` <- if (parallel) `%dopar%` else `%do%`
 
   stime <- system.time({
@@ -96,7 +97,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
       #an empty data frame to hold the data extracted for this tile
       tile_dat <- data.frame()
-      if (length(pred_rs) == 23){################################################### this is until the copying is complete!
+      if (length(pred_rs) == 23){##for now we are working with 23 inputs per tile
         #check if you have any points in this tile
         #crop the calval to this tile
         Pols_tile <- raster::crop(Pols, raster::raster(pred_rs[1]))
@@ -146,7 +147,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            ## you could consider taking only taking a maximum set of points per tile
+            ## you could consider taking only  a maximum set of points per tile
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -157,6 +158,12 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
             #get covariates for randomly sampled absence locations
             abs_loc <- dismo::randomPoints( r_train, n = abs_samp, p = pres_train_tile, warn=0 )
+
+            #exclude pseude-absences that fall too close (< 20 m) to presence locations
+            dist_abs2pres <- sp::spDists(abs_loc, sp::coordinates(Pols_tile))
+            mindist_abs2pres <- apply(dist_abs2pres, 1, min)
+            abs_loc <- abs_loc[mindist_abs2pres > 20,]
+
             abs_dat <- data.frame(raster::extract(r_train, abs_loc))
             abs_dat <- stats::na.omit(abs_dat)
             if (nrow(abs_dat) == 0) {
@@ -204,7 +211,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
 
   #+++++++++++++++++++++++++++++++++++++++++++++++
-  # performance statistics ----
+  # report performance statistics ----
   #+++++++++++++++++++++++++++++++++++++++++++++++
 
   if (parallel){
