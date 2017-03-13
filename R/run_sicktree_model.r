@@ -11,8 +11,6 @@
 #' @examples \dontrun{
 #' }
 #' @export
-
-
 run_sicktree_model <- function(r_pred, vuln_classes, model_dir, outp_dir )
 {
 

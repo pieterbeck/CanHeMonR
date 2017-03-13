@@ -104,7 +104,7 @@ sample_false_positives <- function(r_pred_dir = '//ies.jrc.it/h03/CANHEMON/H03_C
   return(maxent_falsepos_dfs)
 }
 
-# p_and_pb <- raster::shapefile('//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/visual_interpretation/DMC_Nov2016_inspect_multi_final_20170203.shp')
+# p_and_pb <- raster::shapefile('//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/visual_interpretation/DMC_Nov2016_inspect_multi_final_20170217.shp')
 # p_and_pb <- p_and_pb[is.element(p_and_pb$type, c('p','p_plant', 'Pb','Pp')),]
 # fp_samp <- sample_false_positives(r_pred_dir = '//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/TMP_FOR_PIETER/test_docker3_out_processed/',
 #                                                       tile = 'ALL',

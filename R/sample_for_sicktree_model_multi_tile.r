@@ -31,9 +31,9 @@
 #' @export
 sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln_classes, Pols, field_name, data_outp_dir = NULL, abs_samp = 1000,
                                                  parallel = F, nWorkers = 4){
-  if (R.Version()$arch != "i386"){
-    cat("This code needs to be run in 32-bit version of R\n Exiting \n")
-  }
+  #if (R.Version()$arch != "i386"){
+  #  cat("This code needs to be run in 32-bit version of R\n Exiting \n")
+  #}
   #+++++++++++++++++++++++++++++++++++++++++++++++
   #run in R 32 bit
   #see http://stackoverflow.com/questions/7019912/using-the-rjava-package-on-win7-64-bit-with-r
@@ -128,7 +128,6 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
           # extract the data for this tile for each class
           for (i in 1:length(vuln_classes)){
 
-
             pres_train <- NULL
 
             class. <- vuln_classes[[i]]
@@ -157,23 +156,26 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
             pres_dat <- data.frame(raster::extract(r_train, pres_train_tile))
 
             #get covariates for randomly sampled absence locations
-            abs_loc <- dismo::randomPoints( r_train, n = abs_samp, p = pres_train_tile, warn=0 )
+            abs_dat <- data.frame()
+            if (abs_samp > 0){
+              abs_loc <- dismo::randomPoints( r_train, n = abs_samp, p = pres_train_tile, warn=0 )
 
-            #exclude pseude-absences that fall too close (< 20 m) to presence locations
-            dist_abs2pres <- sp::spDists(abs_loc, sp::coordinates(Pols_tile))
-            mindist_abs2pres <- apply(dist_abs2pres, 1, min)
-            abs_loc <- abs_loc[mindist_abs2pres > 20,]
+              #exclude pseude-absences that fall too close (< 20 m) to presence locations
+              dist_abs2pres <- sp::spDists(abs_loc, sp::coordinates(Pols_tile))
+              mindist_abs2pres <- apply(dist_abs2pres, 1, min)
+              abs_loc <- abs_loc[mindist_abs2pres > 20,]
 
-            abs_dat <- data.frame(raster::extract(r_train, abs_loc))
-            abs_dat <- stats::na.omit(abs_dat)
-            if (nrow(abs_dat) == 0) {
-              stop('could not get valid background point values; is there a layer with only NA values?')
-            }
-            if (nrow(abs_dat) < abs_samp/100) {
-              stop('only got:', nrow(abs_dat), 'random background point values; is there a layer with many NA values?')
-            }
-            if (nrow(abs_dat) < abs_samp/10) {
-              warning('only got:', nrow(abs_dat), 'random background point values; Small exent? Or is there a layer with many NA values?')
+              abs_dat <- data.frame(raster::extract(r_train, abs_loc))
+              abs_dat <- stats::na.omit(abs_dat)
+              if (nrow(abs_dat) == 0) {
+                stop('could not get valid background point values; is there a layer with only NA values?')
+              }
+              if (nrow(abs_dat) < abs_samp/100) {
+                stop('only got:', nrow(abs_dat), 'random background point values; is there a layer with many NA values?')
+              }
+              if (nrow(abs_dat) < abs_samp/10) {
+                warning('only got:', nrow(abs_dat), 'random background point values; Small exent? Or is there a layer with many NA values?')
+              }
             }
 
             #join presence and absence data
@@ -234,7 +236,8 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
   if (!is.null(data_outp_dir)){
 
-    data_file <- paste0(data_outp_dir, 'maxent_training_dfs.rdata')
+    #data_file <- paste0(data_outp_dir, 'maxent_training_dfs.rdata')
+    data_file <- paste0(data_outp_dir, 'maxent_training_dfs.rdsdata')
     saveRDS(maxent_training_dfs, file = data_file)
     cat('Wrote away ', data_file,'\n')
   }
