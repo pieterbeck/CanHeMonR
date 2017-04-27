@@ -1,4 +1,4 @@
-#' @title Sample training data for image classification from multiple image tiles
+c#' @title Sample training data for image classification from multiple image tiles
 #' @description For each class in .shp polygon file, Sample training data for image classification from multiple image tiles using their raster bricks as predictors
 #' @param r_train_dir A directory where .tifs for training can be found for multiple tiles
 #' @param tile Character vector. Names of tile(s) to run. 'ALL will run all tiles in r_train_dir. Default is 'ALL'
