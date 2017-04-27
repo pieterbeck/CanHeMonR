@@ -34,7 +34,7 @@ run_sicktree_model_multitile <- function(
                                          fname_predictors_txt,
                                          MaxEntmodel_dir,
                                          fname_MaxEntmodel_r,
-                                         output_dir,
+                                         output_dir
                                          ){
 
   #required R libraries

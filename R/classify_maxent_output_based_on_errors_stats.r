@@ -7,7 +7,7 @@
 #' @param max_permittable_cutoff_npix_final Cutoff-level for the nr of pixels (clumpsize) of presence that a circles of radius radius
 #' needs to contain to be maintained as presence. Typically produced by error_summaries.R
 #' @param radius The radius of the disk in which clump size is counted
-#' @outp_dir the directory to write output images to.
+#' @param outp_dir the directory to write output images to.
 #' @param parallel Should the code be run in parallel using the doParallel package? Default is FALSE.
 #' @param nWorkers If running the ocde in parallel, how many workers should be used? Default is 4.
 classify_maxent_output_based_on_error_stats <- function(r_pred_dir,
