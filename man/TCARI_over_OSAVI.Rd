@@ -27,4 +27,3 @@ TCARI/OSAVI estimates chlorohyll content better in eg mais crops over a range of
 \references{
 Haboudane et al. 2002
 }
-

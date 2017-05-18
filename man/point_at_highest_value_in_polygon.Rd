@@ -18,4 +18,3 @@ A SpatialPoint
 Convert a SpatialPolygon to a SpatialPoint, assigning the point to the location inside the polygong that
 has the highest value in a matching raster
 }
-

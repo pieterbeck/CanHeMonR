@@ -18,4 +18,3 @@ Add Outline of the PT PWN Buffer Zone to an existing plot.
 
 \code{add.PT.buffer.parishes.borders} plots European country borders on top of an existing plot, reading them from a .shp
 }
-

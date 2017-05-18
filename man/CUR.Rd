@@ -23,4 +23,3 @@ Calculate Reflectance Curvature Index
 \references{
 x
 }
-

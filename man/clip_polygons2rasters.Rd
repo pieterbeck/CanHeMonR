@@ -18,4 +18,3 @@ a SpatialPolygons(DataFrame) cut to the joint extent
 given a SpatialPolygons(DataFrame) and a list of raster filenames, clips the Polygons to retain only what fall in
 ONE OR MORE OF the rasters, i.e. to the joint extent of a set of rasters
 }
-

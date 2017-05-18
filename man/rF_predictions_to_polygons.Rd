@@ -27,4 +27,3 @@ a polygon shapefile, akin to segments.shp that has one field, holding with the o
 \description{
 Run an existing rF in predictive mode on mn and sd for each polygon, extracted from a raster
 }
-

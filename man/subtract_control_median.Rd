@@ -17,4 +17,3 @@ A data frame with the variable DN.c added
 A function to subtract from DN.s values (per pixel, data set and band),
 the median in matching control polygons. The control polygons are usually the n. closest neighbours
 }
-

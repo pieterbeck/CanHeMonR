@@ -50,10 +50,16 @@ npx_t_b = the number of pixels in the crown touching the edge of the disk of max
 nstrtcl = the number of pixels taken for granted as crown at the start of the region growing,
 probcut = the final prob_cut value for this crown.
 any attributes from the seeds .shp file will be saved in the output as well.
+
+#' Laura
+tt <- grow_crowns(r_file <- "/Volumes/Laura/Pieter/pt606000-4401000.tif",
+                  seed_shpfile <- "/Volumes/Laura/Castelo_Branco_DMC_Nov2016/DMC_Nov2016_inspect_multi_final_20170203.shp",
+                  seed_extent = rep(NA,4), avoid_recalculation = T, prob_cut = 99, prob_step_down = 2, seed_nrs = NA,
+                  outp_crown_shp_filename = "/Volumes/Laura/Pieter/results/pt606000-4401000", process_dir = NULL, max_crown_RADIUS_in_m = 4, min_crown_RADIUS_in_m = 0.6,
+                  plott = F, RGBseq = c(1,2,3), parallel = F, nWorkers = 4)
 }
 \description{
 Given a an image and point shapefile with points ('seeds') placed at the center of crowns,
 estimate the tree crown around every seed,
 and write the results away as a polygon shapefile.
 }
-

@@ -23,4 +23,3 @@ called in region_growing_wrapper.r
 \references{
 \url{http://w3facility.org/question/r-how-to-split-spatial-multipolygon-to-spatialpolygons-element/}
 }
-

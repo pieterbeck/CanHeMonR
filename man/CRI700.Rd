@@ -23,4 +23,3 @@ Calculate Carotenoid Reflectance Index 700 nm
 \references{
 x
 }
-

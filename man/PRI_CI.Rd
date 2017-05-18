@@ -23,4 +23,3 @@ Calculate Carotenoid/chlorophyll Ratio Index
 \references{
 x
 }
-

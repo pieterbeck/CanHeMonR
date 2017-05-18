@@ -39,4 +39,3 @@ Note that when the rate is 0, the model fails
 \note{
 called by decline_trees_RS_analysis.r
 }
-

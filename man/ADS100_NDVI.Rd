@@ -27,4 +27,3 @@ TO DO: the averaging across the broad band could be weighted using spectral resp
 \references{
 http://w3.leica-geosystems.com/downloads123/zz/airborne/ADS100/brochures-datasheet/Leica_ADS100_DS_en.pdf
 }
-

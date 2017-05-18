@@ -23,4 +23,3 @@ Calculate Vogelmann Index 3
 \references{
 Vogelmann et al 1993
 }
-

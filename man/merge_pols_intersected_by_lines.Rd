@@ -24,4 +24,3 @@ object all the polygons that are split by a set of SpatialLines
 \seealso{
 tile_raster_extent
 }
-

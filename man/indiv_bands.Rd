@@ -17,4 +17,3 @@ a dataframe
 \description{
 a function to get a list into a df for easier manipulation and ggplot display
 }
-

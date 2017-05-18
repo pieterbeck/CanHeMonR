@@ -20,4 +20,3 @@ A function to perform an opening operation on the crown
 \note{
 called in region_growing_wrapper.r
 }
-

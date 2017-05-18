@@ -36,4 +36,3 @@ and 2) a shapefile with trimmed polygons
 \note{
 Write a line that checks wether a polygon intersects with the raster
 }
-

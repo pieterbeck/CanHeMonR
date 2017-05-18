@@ -23,4 +23,3 @@ Calculate Blue Red Index 1
 \references{
 x
 }
-

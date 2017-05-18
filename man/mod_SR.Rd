@@ -23,4 +23,3 @@ Calculate Modified Simple Ratio vegetation index
 \references{
 Chen 1996
 }
-

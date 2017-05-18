@@ -24,4 +24,3 @@ called in region_growing_wrapper.r
 \seealso{
 \code{calc.neighbours.pix.nrs}
 }
-

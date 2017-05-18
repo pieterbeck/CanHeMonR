@@ -23,4 +23,3 @@ Calculate Plant Senescing Reflectance Index
 \references{
 x
 }
-

@@ -34,15 +34,5 @@ A SpatialPoints object
 Remove spatial points that don't appear to have a tree-like shadow in a chosen spectral index or band.
 }
 \examples{
-\dontrun{
-shadow_based_seed_filter(
-seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp',
-image_fname = image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
-shadow_mask = list(800, 801),
-x_shift = -4,
-y_shift = 4,
-shadow_diameter = 5,
-outp_seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds_shadow_masked.shp' )
-}
-}
 
+}

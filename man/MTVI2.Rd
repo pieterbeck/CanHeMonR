@@ -23,4 +23,3 @@ Calculate Modified Triangular Vegetation Index 2
 \references{
 Haboudane et al 2004
 }
-

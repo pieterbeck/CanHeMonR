@@ -26,4 +26,3 @@ of the single-image files. The filename of the text file is outp_shp with '.txt'
 \description{
 ...
 }
-

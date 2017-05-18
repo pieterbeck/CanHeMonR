@@ -24,4 +24,3 @@ Calculate Renormalized Difference Vegetation Index
 \references{
 Rouse et al. 1974
 }
-

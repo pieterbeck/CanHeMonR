@@ -73,4 +73,3 @@ watershed_tree_delineation(
 \seealso{
 polygons_to_seeds
 }
-

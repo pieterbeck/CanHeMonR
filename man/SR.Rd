@@ -24,4 +24,3 @@ Calculate the simple ratio vegetation index
 \references{
 Jordat 1969
 }
-

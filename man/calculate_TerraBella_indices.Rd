@@ -42,4 +42,3 @@ calculate_TerraBella_indices(inp_tif_fnames = fnames, index_names='NDVI',
                            outp_dir ="X:/Imagery/Granadilla/Skybox/dark_object_corrected/spectral_indices")
 }
 }
-

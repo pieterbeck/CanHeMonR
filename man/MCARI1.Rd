@@ -23,4 +23,3 @@ Calculate Modified Chlorophyll Absorption Ratio Index 1
 \references{
 Haboudane et al 2004
 }
-

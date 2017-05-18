@@ -26,4 +26,3 @@ mostly structure-sensitive
 \references{
 Rondeaux et al. 1996
 }
-

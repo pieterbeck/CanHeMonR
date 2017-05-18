@@ -31,4 +31,3 @@ my_NDVI <- CanHeMonR::NDVI(my_ms_data)
 \references{
 Rouse et al. 1974
 }
-

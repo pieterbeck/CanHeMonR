@@ -23,4 +23,3 @@ Calculate Carter Index 2
 \references{
 x
 }
-

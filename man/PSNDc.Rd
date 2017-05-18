@@ -23,4 +23,3 @@ Calculate Pigment Specific Normalized Difference
 \references{
 x
 }
-

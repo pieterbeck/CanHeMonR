@@ -36,4 +36,3 @@ The attribute table of the shp file maintains the attribute table of the crown b
 Calculate one or more spectral indices for individual
 tree crowns depicted in a polygon shapefile and a provided raster image and write the output optionally to a .shp
 }
-

@@ -23,4 +23,3 @@ Calculate Normalized Photochemical Reflectance Index
 \references{
 x
 }
-

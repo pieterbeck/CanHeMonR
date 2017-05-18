@@ -27,4 +27,3 @@ TO DO: Provide options with classification (rF, where you have pres/abs training
 and similarity, where you only have pres training data that uses  maxent
 DOES CROPPPING TO COMMON EXTENT SAVE TIME ?
 }
-

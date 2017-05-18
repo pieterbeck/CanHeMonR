@@ -27,4 +27,3 @@ TO DO: the averaging across the broad band could be weighted using spectral resp
 \references{
 https://calval.cr.usgs.gov/JACIE_files/JACIE10/Presentations/ThurAM/Pagnutti_Mary_JACIE_2010_DigitalCameraCal.pdf
 }
-

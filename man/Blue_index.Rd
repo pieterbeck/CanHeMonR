@@ -23,4 +23,3 @@ Calculate Greenness Index
 \references{
 x
 }
-

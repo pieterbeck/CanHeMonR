@@ -22,4 +22,3 @@ When given a the nrow and ncol of a matrix, this function returns the cellnumber
 \note{
 called in region_growing_wrapper.r
 }
-

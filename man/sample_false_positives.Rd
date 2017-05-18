@@ -20,7 +20,7 @@ true presence points Optional.}
 \item{mindistance_to_presence}{The distance, in map units, that the sampled false positives should be from the true positives provided
 in points_to_avoid.}
 
-\item{perc}{The percentage of the available false positive pixels in each image to sample. Default is 1 %.}
+\item{perc}{The percentage of the available false positive pixels in each image to sample. Default is 1.}
 
 \item{max_n}{The absolute maximum of locations to extract per image. This value overrides the proportion.}
 
@@ -31,4 +31,3 @@ in points_to_avoid.}
 \description{
 Sample false positives from a set of binary images
 }
-

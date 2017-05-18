@@ -23,4 +23,3 @@ Calculate Lichtenthaler Index 1
 \references{
 Lichtenthaler et al 1996
 }
-

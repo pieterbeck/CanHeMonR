@@ -4,10 +4,10 @@
 \alias{run_sicktree_model}
 \title{Run a distribution model using a raster brick as predictors}
 \usage{
-run_sicktree_model(r_pred, vuln_classes, model_dir, outp_dir)
+run_sicktree_model(tile, vuln_classes, model_dir, outp_dir)
 }
 \arguments{
-\item{r_pred}{A rasterbrick or rasterstack containing the predictor layers}
+\item{tile}{path to the raster where we want to run the model}
 
 \item{vuln_classes}{A list of the classes you want to run existing models for
 Only the fist place in each element will be used to search for existing models.}
@@ -28,8 +28,6 @@ Run in 32-bit R installation. Implement optional parallel
 \examples{
 \dontrun{
 }
-}
-\seealso{
-\code{\link{calibrate_vulnerableveg_model}}
-}
+#' Laura
 
+}

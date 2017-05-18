@@ -21,4 +21,3 @@ called in region_growing_wrapper.r
 \references{
 http://r-sig-geo.2731867.n2.nabble.com/Remove-holes-from-a-SpatialPolygon-td7585464.html
 }
-
