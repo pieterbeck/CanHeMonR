@@ -23,4 +23,3 @@ Calculate Redness Index
 \references{
 x
 }
-

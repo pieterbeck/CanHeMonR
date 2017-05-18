@@ -18,4 +18,3 @@ Ensure that a raster/brick has unven nr of pixels in x and y dimensions make sur
 \note{
 called in region_growing_wrapper.r
 }
-

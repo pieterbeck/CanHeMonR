@@ -20,4 +20,3 @@ For a matrix, order cells by distance to the center.
 \note{
 called in region_growing_wrapper.r
 }
-

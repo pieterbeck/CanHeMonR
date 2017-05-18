@@ -23,4 +23,3 @@ Calculate Chlorophyll Index Red EdgeChlorophyll Index Red Edge
 \references{
 x
 }
-

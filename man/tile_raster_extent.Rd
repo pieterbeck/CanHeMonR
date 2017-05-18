@@ -20,4 +20,3 @@ Tile the extent object of a raster object for tiled processing
 \seealso{
 merge_pols_intersected_by_line
 }
-

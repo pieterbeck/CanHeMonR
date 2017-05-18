@@ -23,4 +23,3 @@ Calculate Lichtenhaler red over blue index
 \references{
 x
 }
-

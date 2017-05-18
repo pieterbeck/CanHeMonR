@@ -5,19 +5,17 @@
 #' @param polygon_Spat a SpatialPolygons object
 #' @return A data frame with entries of bandwise mean ('Mean...') and sd ('Std...') for each polygon
 #' @export
-extract_mn_sd <- function(brick.,
-                          polygon_Spat){
+extract_mn_sd <- function(brick.,polygon_Spat){
   decimals <- 6
   scalefac <- 10^decimals
-
   vals <- raster::extract(brick., polygon_Spat,
                           fun=function(x,na.rm=T){
-                            round(scalefac*mean(x,na.rm=T))+round(sd(scalefac*x,na.rm=T))/scalefac}
-                          )
+                            round(scalefac*mean(x,na.rm=T))+round(sd(scalefac*x,na.rm=T))/scalefac})
   segments.replace.vals <- cbind.data.frame(floor(vals)/scalefac, (vals-floor(vals)))
   colnames(segments.replace.vals) <- c(paste0('Mean',1:raster::nlayers(brick.)),paste0('Std',1:raster::nlayers(brick.)))
   return(segments.replace.vals)
 }
+
 
 
 #' @title Calibrates A Supervised Classification Of Multiband Imagery Data

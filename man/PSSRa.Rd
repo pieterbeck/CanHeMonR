@@ -23,4 +23,3 @@ Calculate Pigment Specific Simple Ratio Chlorophyll a
 \references{
 x
 }
-

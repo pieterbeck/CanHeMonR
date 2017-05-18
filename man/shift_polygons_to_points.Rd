@@ -50,4 +50,3 @@ shift_polygons_to_points(polygon_shp = polygon_shp, source_point_shp = source_po
                          target_point_shp = target_point_shp, outp_fname = outp_fname, extent_to_process = extent_to_process, attributes_to_retain = c('primalX' ,'primalY'))
 }
 }
-

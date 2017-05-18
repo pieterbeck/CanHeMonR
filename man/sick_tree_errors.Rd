@@ -46,4 +46,3 @@ Calculate errors in automated detection of declining trees using visual inspecti
 \dontrun{
 }
 }
-

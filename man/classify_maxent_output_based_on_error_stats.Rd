@@ -21,6 +21,8 @@ needs to contain to be maintained as presence. Typically produced by error_summa
 
 \item{radius}{The radius of the disk in which clump size is counted}
 
+\item{outp_dir}{the directory to write output images to.}
+
 \item{parallel}{Should the code be run in parallel using the doParallel package? Default is FALSE.}
 
 \item{nWorkers}{If running the ocde in parallel, how many workers should be used? Default is 4.}
@@ -29,4 +31,3 @@ needs to contain to be maintained as presence. Typically produced by error_summa
 Classify maxent output to binary presence absence maps based on thresholds of
 pixel-level probability, expected minimum crown size, and clump size
 }
-

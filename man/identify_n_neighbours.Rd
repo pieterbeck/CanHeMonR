@@ -28,4 +28,3 @@ Decline.cluster <- shapefile('E:/beckpie/PWN/vector_data/Decline_N_tree_clusters
 tt <- identify_n_neighbours(Spat.polygons = Decline.cluster,n=2,append=T)
 }
 }
-

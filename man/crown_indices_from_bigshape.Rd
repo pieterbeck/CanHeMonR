@@ -34,4 +34,3 @@ Append a big SpatialPolygonDataFrame with crown-level indices and band values ex
 The extraction can be tuned to only apply to polygons that correspond to the flight and sensor that acquired the image file.
 The extraction can also be tuned to get values from a DEM, or other topographical layer. In that cases no indices are calculated.
 }
-

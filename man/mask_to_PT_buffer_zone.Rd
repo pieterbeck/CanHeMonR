@@ -19,4 +19,3 @@ H:\\FISE\\forest\\CanopyHealthMonitoring\\PWN\\maps\\PT_buffer_zone\\FreguesiasZ
 \description{
 \code{mask.to.PT.buffer.zone} masks a raster file to only retain data within the PT PWN buffer zone.
 }
-

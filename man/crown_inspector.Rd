@@ -32,4 +32,3 @@ A set of jpeg files of crowns plotted on top of their respective images.
 For a given set of SpatialPoints, and a set of images and associated .shp file of delineated crowns,
 plot the crown delineated around each of the spatial points in each of the images.
 }
-

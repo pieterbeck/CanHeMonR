@@ -23,4 +23,3 @@ Calculate Modified Soil-Adjusted Vegetation Index
 \references{
 Qi et al. 1994
 }
-

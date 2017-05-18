@@ -15,4 +15,3 @@ The object if has any non-na elements, else NULL
 \description{
 Check if an object contains only NAs
 }
-

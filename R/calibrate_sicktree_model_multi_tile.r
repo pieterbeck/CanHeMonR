@@ -7,32 +7,32 @@
 #' @note Run in 32-bit R installation. Do you need a 'require(rJava)?'. Implement optional parallel
 #' @return Saves class-specific distribution models, using a data frame created from training points and covariate images
 #' @examples \dontrun{
-#' #calibrate the model with 10 absences per tile
-#' model_dir <- '//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/classification_temp/'
-#' testmod100 <- calibrate_sicktree_model_multi_tile(vuln_classes='ALL',
-#' training_df = readRDS(file.path(model_dir, 'maxent_samplemaxent_training_dfs_100_samples.rdsdata')),
-#'                                                   model_outp_dir = paste0(model_dir,'samp100_'))
-#'
-#' #calibrate the model with 10 absences per tile
-#' model_dir <- '//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/classification_temp/'
-#' testmod10 <- calibrate_sicktree_model_multi_tile(vuln_classes='ALL',
-#' training_df = readRDS(file.path(model_dir, 'maxent_samplemaxent_training_dfs_10_samples.rdsdata')),
-#' model_outp_dir = paste0(model_dir,'samp10_')_
+#' #calibrate the model with 10 absences per tile for Pbclass
+#' tt <- calibrate_sicktree_model_multi_tile (vuln_classes = list(c('Pb')), training_df = readRDS(file.path(model_dir, 'maxent_samplemaxent_training_dfs_100_samples.rdsdata')),
+#'                                                   model_outp_dir = paste0(model_dir,'samp100_')))),
+#                                model_outp_dir = paste0(model_dir <- '//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/classification_temp/','samp100_'))
 #' }
+
+
+#'
 #' @export
 calibrate_sicktree_model_multi_tile <- function(vuln_classes = 'ALL', training_df, model_outp_dir){
   if (R.Version()$arch != "i386"){
-    cat("This code needs to be run in 32-bit version of R\n Exiting \n")
+    #If  64bit version, deactivate JAVA_HOME it within your R-session with the following code before loading rJava
+    if (Sys.getenv("JAVA_HOME")!="")
+      Sys.setenv(JAVA_HOME="")
+    library(rJava)
   }
   #+++++++++++++++++++++++++++++++++++++++++++++++
   #run in R 32 bit
   #see http://stackoverflow.com/questions/7019912/using-the-rjava-package-on-win7-64-bit-with-r
   #http://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf
 
-  #require(maptools)
+  require(maptools)
   #read in the image
-  #require(raster)
-
+  require(raster)
+  require(dismo)
+  #require(rJava)
   #for each class that should be modelled
   if (vuln_classes == 'ALL'){
     vuln_classes <- unique(training_df$class)
@@ -42,6 +42,7 @@ calibrate_sicktree_model_multi_tile <- function(vuln_classes = 'ALL', training_d
     #+++++++++++++++++++++++++++++++++++++++++++++++
     # get the data for this class
     #+++++++++++++++++++++++++++++++++++++++++++++++
+
     class_rows <- which(training_df$class == class)
     class_resp <- training_df$pres[class_rows]
     class_pred <- within(training_df, rm(pres,class))[class_rows,]
@@ -49,6 +50,7 @@ calibrate_sicktree_model_multi_tile <- function(vuln_classes = 'ALL', training_d
     # calibrate the model ----
     #+++++++++++++++++++++++++++++++++++++++++++++++
 #browser()
+    dismo::maxent()
     mod2 <- dismo::maxent(p = class_resp, x = class_pred)
     assign(paste0('mod.',class),mod2)
 

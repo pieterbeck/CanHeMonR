@@ -23,4 +23,3 @@ where the polygon shows the extent of an image and there's an attribute with the
 create_overview_of_rasters('H:/FISE/forest/CanopyHealthMonitoring/PWN/imagery/PT_Orto/Ortos_DistrCasteloBranco/')
 }
 }
-

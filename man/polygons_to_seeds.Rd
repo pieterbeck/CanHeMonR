@@ -42,4 +42,3 @@ Convert SpatialPolygons to points, in a context-specific manner
 \seealso{
 watershed_tree_delineation
 }
-

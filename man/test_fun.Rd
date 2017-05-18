@@ -15,4 +15,3 @@ A raster layer
 \description{
 Extract from a rasterband a particular wavelength, or spectral index
 }
-

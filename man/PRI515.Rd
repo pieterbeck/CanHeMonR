@@ -23,4 +23,3 @@ Calculate Photochemical Reflectance Index 515
 \references{
 x
 }
-

@@ -23,4 +23,3 @@ CalculateGitelson & Merzlyak index 1
 \references{
 Gitelson & Merzlyak 1997
 }
-

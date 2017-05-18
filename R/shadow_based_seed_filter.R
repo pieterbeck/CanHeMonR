@@ -13,20 +13,20 @@
 #' @param outp_seed_shp_fname Character. Filename for the output point shapefile. Default is NA, which means output is not written away.
 #' @return A SpatialPoints object
 #' @examples
-#' \dontrun{
-#' shadow_based_seed_filter(
-#' seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp',
-#' image_fname = image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
-#' shadow_mask = list(800, 801),
-#' x_shift = -4,
-#' y_shift = 4,
-#' shadow_diameter = 5,
-#' outp_seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds_shadow_masked.shp' )
-#' }
+# \dontrun{
+# shadow_based_seed_filter(
+# seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds.shp',
+# image_fname = image_fname = 'E:/FISE/forest/CanopyHealthMonitoring/PWN/flights_final/150727_mca/150727_mca.bsq',
+# shadow_mask = list(800, 801),
+# x_shift = -4,
+# y_shift = 4,
+# shadow_diameter = 5,
+# outp_seed_shp_fname = 'C:/Users/pieterbeck/Documents/temp/test_treedetection_seeds_shadow_masked.shp' )
+# }
+#'
 #' @export
 shadow_based_seed_filter <- function(seed_shp_fname, image_fname, shadow_mask, x_shift, y_shift, shadow_diameter = 6, bandnames = NULL,
                                      outp_seed_shp_fname){
-
   # read in the seeds
   seeds <- raster::shapefile(seed_shp_fname)
 

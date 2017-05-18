@@ -1,4 +1,4 @@
-c#' @title Sample training data for image classification from multiple image tiles
+#' @title Sample training data for image classification from multiple image tiles
 #' @description For each class in .shp polygon file, Sample training data for image classification from multiple image tiles using their raster bricks as predictors
 #' @param r_train_dir A directory where .tifs for training can be found for multiple tiles
 #' @param tile Character vector. Names of tile(s) to run. 'ALL will run all tiles in r_train_dir. Default is 'ALL'
@@ -12,6 +12,7 @@ c#' @title Sample training data for image classification from multiple image til
 #' @param abs_samp How many 'absence' pixels should be randomly selected from eah tile to train the model? Default is 100.
 #' @param parallel Should the code be run in parallel using the doParallel package? Default is FALSE.
 #' @param nWorkers If running the ocde in parallel, how many workers should be used? Default is 4.
+#' @param ninputs_tile Number of inputs that we have fore each tile, for exemple number of textures
 #' @param data_outp_dir The folder and filename prefix to save the sampled data to. No data is saved is data_outp_dir is NULL. Default is NULL.
 #' @note Run in 32-bit R installation. Do you need a 'require(rJava)?'. Implement optional parallel
 #' @return Saves a list with class-specific data frames of which the first column is the presence-absence response that can be used to train distribution model.
@@ -20,17 +21,10 @@ c#' @title Sample training data for image classification from multiple image til
 #' class_test_path <- '//ies.jrc.it/h03/FISE/forest/CanopyHealthMonitoring/PWN/classification_tests'
 #' training_pol_filename <- file.path(class_test_path,'cal_val_data/Castelo_Branco_DMC_Nov2016/DMC_Nov2016_inspect_multi_final_20170126.shp')
 #' Pols <- raster::shapefile(training_pol_filename)
-#'
-#' tt <- sample_for_sicktree_model_multi_tile(r_train_dir =
-#' "//ies.jrc.it/h03/CANHEMON/H03_CANHEMON/Imagery/Portugal/DMC/ortophotos_22122016/RGBN_LUT",
-#'                                           #tile = 'ALL',
-#'                                           tile = c('pt606000-4401000', 'pt610000-4415000','pt610000-4410000','pt610000-4408000'),
-#'                                           list(c('Pb')), Pols, field_name = 'type', data_outp_dir = 'E:/beckpie/temp/maxent_sample', parallel = T, nWorkers =2)
-#'
-#' }
+#'}
 #' @export
-sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln_classes, Pols, field_name, data_outp_dir = NULL, abs_samp = 1000,
-                                                 parallel = F, nWorkers = 4){
+sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln_classes, Pols, field_name,ninputs_tile, data_outp_dir = NULL, abs_samp = 1000,
+                                               parallel = F, nWorkers = 4){
   #if (R.Version()$arch != "i386"){
   #  cat("This code needs to be run in 32-bit version of R\n Exiting \n")
   #}
@@ -39,10 +33,11 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
   #see http://stackoverflow.com/questions/7019912/using-the-rjava-package-on-win7-64-bit-with-r
   #http://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf
 
-  #require(maptools)
+  require(maptools)
   #read in the image
-  #require(raster)
+  require(raster)
 
+  #Tells if the dataframe is a factor, if yes erase the levels that are NULL. IN THIS CASE DATA IS NOT A FACTOR
   if(is.factor( Pols@data[[field_name]])){
     Pols@data[[field_name]] <- droplevels(Pols@data[[field_name]])
   }
@@ -50,6 +45,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
   #only keep training points/polygons that fall in the vuln_classes to be considered
   Pols <- Pols[is.element(Pols@data[[field_name]] , unlist(vuln_classes)), ]
+
 
   #harvest all the tif files in the directories holding covariate/predictor images
   all_tifs <- list.files(r_train_dir, recursive = T, full.names = T)
@@ -59,6 +55,7 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
 
   #if you want to run all the tiles in a directory, harvest the available tilenames
   if (tile[1] == 'ALL'){
+    #Take de hole name of the file 16 characters
     tile <- substr(basename(all_tifs),1,16)
     tile <- unique(tile)
     #only keep tiles that start  with 'pt'
@@ -75,29 +72,38 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
   #set up the cluster for parallel processing
   if (parallel){
     try(parallel::stopCluster(cl), silent=T)
+
+
     # TO DO add a line that avoids allocating more workers than you have cores
-    cl <- parallel::makeCluster(nWorkers)
-    doParallel::registerDoParallel(cl)
+    # set in minimumnot in conditional
+    maxcl <- (parallel::detectCores(logical = FALSE) * parallel::detectCores(logical = TRUE))-1
+    if (nWorkers <= maxcl){
+      cl <- parallel::makeCluster(nWorkers)
+      doParallel::registerDoParallel(cl)
+    }else{
+      cl <- parallel::makeCluster(maxcl)
+      doParallel::registerDoParallel(cl)
+    }
   }
   #choose the appropriate operator for the foreach loop
   require(foreach)
   `%op%` <- if (parallel) `%dopar%` else `%do%`
-
-  stime <- system.time({
-    maxent_training_dfs <- foreach::foreach(i = 1:length(tile), .combine = rbind.data.frame, .inorder=F, .multicombine=F, .errorhandling='remove') %op% {
-      tile_i <- tile[i]
-    #for (tile_i in tile){
-
+  length(tile)
+  stime <- system.time({maxent_training_dfs <- foreach::foreach(i = 1:length(tile), .combine = rbind.data.frame, .inorder=F, .multicombine=F, .errorhandling='remove') %op% {
+    tile_i <- tile[i]
+    for (tile_i in tile){
+      #tile_i = tile[1]
       #make alternative tile code (Margherita uses these in the texture filenames)
       tile_i_multiversion <- unique(c(tile_i, gsub('_','-',tile_i),gsub('-','_',tile_i),gsub('-','\\.',tile_i),gsub('_','\\.',tile_i),gsub('\\.','-',tile_i),gsub('\\.','_',tile_i)))
       tile_i_multiversion_for_regexpr <- paste(tile_i_multiversion, collapse = "|")
-     # pred_rs <- list.files(r_train_dir, recursive = T, full.names = T)
+      #pred_rs <- list.files(r_train_dir, recursive = T, full.names = T)
       #pred_rs <- pred_rs[grepl('.tif',pred_rs)]
       pred_rs <- all_tifs[grepl(tile_i_multiversion_for_regexpr, all_tifs)]
-
       #an empty data frame to hold the data extracted for this tile
       tile_dat <- data.frame()
-      if (length(pred_rs) == 23){##for now we are working with 23 inputs per tile
+
+      #if (length(pred_rs) == 23){##for now we are working with 23 inputs per tile
+      if (length(pred_rs) == ninputs_tile){
         #check if you have any points in this tile
         #crop the calval to this tile
         Pols_tile <- raster::crop(Pols, raster::raster(pred_rs[1]))
@@ -190,25 +196,24 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
           }
 
 
-          # #join the data from this tile if to the one from the other tiles
-          # if (tile_counter == 0){
-          #
-          #   maxent_training_dfs[[class.]] <- tile_dat
-          # }else{
-          #   maxent_training_dfs[[class.]] <- rbind.data.frame(maxent_training_dfs[[class.]], tile_dat)
-          # }
-          #
-
-          #tile_counter <- tile_counter + 1
-          #cat(tile_counter, ' tiles done, ', length(tile)-tile_counter, ' to go\n')
+          # #join the data from this tile if to the one from the other tiles - no lo hace
+          if (tile_counter == 0){
+            maxent_training_dfs[[class.]] <- tile_dat
+            }else{
+              maxent_training_dfs[[class.]] <- rbind.data.frame(maxent_training_dfs[[class.]], tile_dat)
+              }
+          tile_counter <- tile_counter + 1
+          cat(tile_counter, ' tiles done, ', length(tile)-tile_counter, ' to go\n')
         }
 
+      }else{
+        cat('The number of inputs given is not the correct one, it should be:',ninputs_tile, 'not:',length((pred_rs)),'\n')
       }
 
-      #return the tile_dat at the end of each iteration
-      tile_dat
+      # #return the tile_dat at the end of each iteration
+      # tile_dat
     }
-  })[3]
+  }
   cat("------------------------------------------\n")
 
 
@@ -221,7 +226,6 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
   }else{
     cat('processing sequentially on a single worker \n')
   }
-  cat('Estimated ',length(tile),' crowns in ',round(stime/60),' minutes\n')
 
   #############################################
   # close the cluster set up forparallel processing
@@ -234,14 +238,20 @@ sample_for_sicktree_model_multi_tile <- function(r_train_dir, tile = 'ALL', vuln
   # save the extracted data ----
   #+++++++++++++++++++++++++++++++++++++++++++++++
 
+
+})
   if (!is.null(data_outp_dir)){
 
     #data_file <- paste0(data_outp_dir, 'maxent_training_dfs.rdata')
     data_file <- paste0(data_outp_dir, 'maxent_training_dfs.rdsdata')
-    saveRDS(maxent_training_dfs, file = data_file)
+    saveRDS(tile_dat_class, file = data_file)
+    #saveRDS(maxent_training_dfs, file = data_file)
     cat('Wrote away ', data_file,'\n')
   }
 
-
+  cat('Estimated ',length(tile),' tiles in ',round(stime/60),' minutes\n')
+  maxent_training_dfs
   return(maxent_training_dfs)
 }
+
+

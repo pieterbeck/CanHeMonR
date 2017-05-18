@@ -6,7 +6,7 @@
 #' true presence points Optional.
 #' @param mindistance_to_presence The distance, in map units, that the sampled false positives should be from the true positives provided
 #' in points_to_avoid.
-#' @param perc The percentage of the available false positive pixels in each image to sample. Default is 1 %.
+#' @param perc The percentage of the available false positive pixels in each image to sample. Default is 1.
 #' @param max_n The absolute maximum of locations to extract per image. This value overrides the proportion.
 #' @param parallel Should the code be run in parallel using the doParallel package? Default is FALSE.
 #' @param nWorkers If running the ocde in parallel, how many workers should be used? Default is 4.

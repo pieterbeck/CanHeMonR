@@ -23,4 +23,3 @@ Calculate Structure-Insensitive Pigment Index
 \references{
 x
 }
-

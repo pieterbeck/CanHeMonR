@@ -23,4 +23,3 @@ Calculate Enhanced Vegetation Index
 \references{
 Liu and Huete 1995
 }
-

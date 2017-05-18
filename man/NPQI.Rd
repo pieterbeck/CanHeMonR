@@ -23,4 +23,3 @@ Calculate Normalized Phaeophytinization Index
 \references{
 x
 }
-

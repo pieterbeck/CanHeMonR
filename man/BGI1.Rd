@@ -23,4 +23,3 @@ Calculate Blue Green Index 1
 \references{
 x
 }
-

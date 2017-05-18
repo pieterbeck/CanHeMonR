@@ -23,4 +23,3 @@ Calculate Reflectance Band Ratio Using NIR
 \references{
 Datt et al. 1998
 }
-

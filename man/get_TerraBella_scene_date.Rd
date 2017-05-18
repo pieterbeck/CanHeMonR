@@ -28,4 +28,3 @@ graphics::hist(imdates, breaks = 'months', format = "\%b \%Y", freq = T)
 axis.Date(4, at = "2015-01-01")
 }
 }
-

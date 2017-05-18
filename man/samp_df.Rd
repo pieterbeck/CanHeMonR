@@ -18,4 +18,3 @@ a dataframe with no more than maxsamp rows
 Ensure that a dataframe has <= maxsamp rows.
 If it doesn't, sample a subset (n=maxsamp) rows from a data frame
 }
-

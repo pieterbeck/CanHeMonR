@@ -23,4 +23,3 @@ Calculate Ratio Analysis Of Reflectance Spectra
 \references{
 x
 }
-

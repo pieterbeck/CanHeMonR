@@ -19,4 +19,3 @@ A dataframe that is a subset of mydat, with nrows close to nsamples
 \description{
 Take a stratified sample of chosen size from a data
 }
-

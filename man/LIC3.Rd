@@ -23,4 +23,3 @@ Calculate Lichtenhaler index
 \references{
 x
 }
-

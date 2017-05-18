@@ -23,4 +23,3 @@ Calculate Photochemical Reflectance Index 600
 \references{
 x
 }
-

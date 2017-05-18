@@ -34,4 +34,3 @@ and named following Quantalab's convention, the data that are closest to a chose
 \note{
 TO DO: adapt to keep decimals in wavelength value written in layer name
 }
-

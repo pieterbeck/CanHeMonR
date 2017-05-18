@@ -20,4 +20,3 @@ For an image to be used in a region growing algorithm, check the image resolutio
 \note{
 called in region_growing_wrapper.r
 }
-

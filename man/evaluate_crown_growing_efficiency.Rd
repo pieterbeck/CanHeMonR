@@ -15,4 +15,3 @@ graphs
 \description{
 Evaluate efficiency of crown delineation using CanHeMonR::grow_crowns. In particular, check whether the prob_cut parameter could be changed to save time.
 }
-

@@ -23,4 +23,3 @@ a pairs plot
 \description{
 Summarize a data set visually using a pairs plot
 }
-

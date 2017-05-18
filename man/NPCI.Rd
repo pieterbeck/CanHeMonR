@@ -23,4 +23,3 @@ Calculate Normalized Pigments Index
 \references{
 x
 }
-

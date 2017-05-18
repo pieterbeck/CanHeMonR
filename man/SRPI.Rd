@@ -23,4 +23,3 @@ Calculate Simple Ratio Pigment Index
 \references{
 x
 }
-

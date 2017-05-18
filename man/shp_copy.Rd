@@ -30,4 +30,3 @@ shp_copy(from = "C:/Users/pieterbeck/Documents/simple_outline.shp",
 to = "C:/Users/pieterbeck/Documents/temp/")
 }
 }
-

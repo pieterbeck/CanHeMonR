@@ -23,4 +23,3 @@ Calculate Triangular Vegetation Index
 \references{
 Broge and Leblanc 2000
 }
-

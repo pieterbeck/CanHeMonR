@@ -22,4 +22,3 @@ A raster with distance values.
 \description{
 When given a binary raster depicting a shape \code{calculate.remoteness.from.binary.raster} tells for each pixel, how far it is from the shape
 }
-

@@ -18,4 +18,3 @@ A data frame with entries of bandwise mean ('Mean...') and sd ('Std...') for eac
 Extracts means and sd for each band of a brick per each polygon in polygon_Spat.
 This method achieves it in one extract pass over the polygons (functions in extract should return a single value)
 }
-

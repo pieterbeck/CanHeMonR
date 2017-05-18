@@ -22,4 +22,3 @@ for the time being strata are cut for each variable at the quantiles.
 Default quantiles are c(0,0.075,0.30,0.70,0.925,1)
 #http://stackoverflow.com/questions/32614736/multidimensional-histogram-with-r
 }
-

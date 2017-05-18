@@ -30,4 +30,3 @@ A shapefile that is a subset of the input, with nrows close to nsamples
 \description{
 Take a stratified sample of chosen size from a .shp data set of spectral indices
 }
-

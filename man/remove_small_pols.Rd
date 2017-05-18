@@ -19,4 +19,3 @@ A SpatialPolygons(DataFrame) object
 \description{
 Remove small polygons from a SpatialPolygons object
 }
-
